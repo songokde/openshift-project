@@ -1,0 +1,62 @@
+package com.newcloud.waf.service;
+
+import java.util.Map;
+
+public interface IOverViewService extends IBaseService{
+
+	/**
+	 * 根据时间戳获取请求数
+	 * @param beginTimestamp
+	 * @param endTimestamp
+	 * @return
+	 */
+	public Map<String,Integer>  findRequsetCountByTime(Long beginTimestamp, Long endTimestamp) throws Exception;
+
+	/**
+	 * 获取最近一周的 天数据汇总
+	 * @param begin7Timestamp
+	 * @param endTimestamp
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, Map<String, Integer>> findRecentMapByTime(Long begin7Timestamp, Long endTimestamp) throws Exception;
+
+	/**
+	 * 查询攻击次数
+	 * @param domainId
+	 * @param type
+	 * @param beginTimestamp
+	 * @param endTimestamp
+	 * @return
+	 */
+	public Integer findCountByType(Integer domainId, String type, long beginTimestamp, long endTimestamp) throws Exception;
+
+	/**
+	 * 查询攻击ip数
+	 * @param domainId
+	 * @param type
+	 * @param beginTimestamp
+	 * @param endTimestamp
+	 * @return
+	 * @throws Exception
+	 */
+	public Integer findIpCountByType(Integer domainId, String type, long beginTimestamp, long endTimestamp) throws Exception;
+
+	/**
+	 * 查询top5 ip排行
+	 * @param domainId
+	 * @param type
+	 * @return
+	 */
+	public Map<String, Object> findTopIpByType(Integer domainId, String type) throws Exception;
+
+	/**
+	 * 查询top5 区域排行
+	 * @param domainId
+	 * @param type
+	 * @return
+	 */
+	public Map<String, Object> findTopAreaByType(Integer domainId, String type) throws Exception;
+	
+	
+}

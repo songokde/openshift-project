@@ -1,0 +1,206 @@
+package com.newcloud.waf.web.controller.overview;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.newcloud.waf.service.IOverViewService;
+import com.newcloud.waf.service.IUserService;
+import com.newcloud.waf.storage.entity.BaseEntity;
+import com.newcloud.waf.util.ShyyDateUtil;
+
+/**
+ * 主页-主页展示
+ * @author song
+ *
+ */
+@Controller
+@RequestMapping("/over")
+public class OverViewController {
+
+	@Resource
+	private IOverViewService overViewService;
+	
+//------------------------------------------------------------主页方法---------------------------------------------------
+    @RequestMapping("/allMap")
+    @ResponseBody
+	public Map<String,Map<String,Object>> getViewMap(){
+    	Map<String,Map<String,Object>> resultMap = new HashMap<>();
+    	try {
+			long endTimestamp = System.currentTimeMillis() / 1000;
+			long beginTimestamp =ShyyDateUtil.getZeroDate(new Date().getTime());
+			//昨天时间  0点
+			long begin1Timestamp =ShyyDateUtil.getZeroDate((ShyyDateUtil.getPastDate(1))*1000l);
+			long begin7Timestamp = ShyyDateUtil.getZeroDate((ShyyDateUtil.getPastDate(7))*1000l);
+			//过去30天时间 0点
+			long begin30Timestamp = ShyyDateUtil.getZeroDate((ShyyDateUtil.getPastDate(30))*1000l);
+			//今天  今天0点到当前时间
+			Map<String,Integer> todayMap = overViewService.findRequsetCountByTime(beginTimestamp,endTimestamp);
+			//昨天 昨天0点到今天0点
+			Map<String,Integer> yesterdayMap = overViewService.findRequsetCountByTime(begin1Timestamp,beginTimestamp);
+			//过去30天
+			Map<String,Integer> futureMap = overViewService.findRequsetCountByTime(begin30Timestamp,beginTimestamp);
+			
+			Map<String,Object> webTitle = new HashMap<String, Object>();
+			webTitle.put("yesterday", yesterdayMap.get("web"));
+			webTitle.put("today", todayMap.get("web"));
+			webTitle.put("future", futureMap.get("web"));
+			resultMap.put("web", webTitle);
+			Map<String,Object> ccTitle = new HashMap<String, Object>();
+			ccTitle.put("yesterday", yesterdayMap.get("cc"));
+			ccTitle.put("today", todayMap.get("cc"));
+			ccTitle.put("future", futureMap.get("cc"));
+			resultMap.put("cc", ccTitle);
+			Map<String,Object> visitTitle = new HashMap<String, Object>();
+			visitTitle.put("yesterday", yesterdayMap.get("visit"));
+			visitTitle.put("today", todayMap.get("visit"));
+			visitTitle.put("future", futureMap.get("visit"));
+			resultMap.put("visit", visitTitle);
+			
+				
+			Map<String,Map<String,Integer>> recentMap = overViewService.findRecentMapByTime(begin7Timestamp,endTimestamp);
+			
+			
+			List<String> time = new ArrayList<>();
+			time.add("11-28");
+			time.add("11-29");
+			time.add("11-30");
+			time.add("11-31");
+			time.add("12-01");
+			List<Integer> webValue = new ArrayList<>();
+			webValue.add(18);
+			webValue.add(28);
+			webValue.add(10);
+			webValue.add(39);
+			webValue.add(11);
+			Map<String,Object> webChar = new HashMap<String, Object>();
+			webChar.put("time", time);
+			webChar.put("value", webValue);
+			resultMap.put("webChar", webChar);
+			
+			
+			List<Integer> ccValue = new ArrayList<>();
+			ccValue.add(88);
+			ccValue.add(98);
+			ccValue.add(80);
+			ccValue.add(78);
+			ccValue.add(100);
+			Map<String,Object> ccChar = new HashMap<String, Object>();
+			ccChar.put("time", time);
+			ccChar.put("value", ccValue);
+			resultMap.put("ccChar", ccChar);
+			
+			
+			List<Integer> visitValue = new ArrayList<>();
+			visitValue.add(100);
+			visitValue.add(120);
+			visitValue.add(110);
+			visitValue.add(200);
+			visitValue.add(30);
+			Map<String,Object> visitChar = new HashMap<String, Object>();
+			visitChar.put("time", time);
+			visitChar.put("value", visitValue);
+			resultMap.put("visitChar", visitChar);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	return resultMap;
+	}
+    
+    
+    @RequestMapping("/list")
+    @ResponseBody
+	public List<BaseEntity> getTopList(){
+    	
+    	return null;
+    }
+	
+    
+//----------------------------------------------------------------------报表中方法--------------------------------------------------------------
+    @RequestMapping("/reportMap")
+    @ResponseBody
+	public Map<String,Map<String,Object>> getReportMap(){
+    	//当前时间
+    	long endTimestamp = System.currentTimeMillis() / 1000;
+    	//long beginTimestamp =ShyyDateUtil.getZeroDate();
+    	//昨天时间
+    	long begin1Timestamp = ShyyDateUtil.getPastDate(1);
+    	//过去7天时间
+    	long begin7Timestamp = ShyyDateUtil.getPastDate(7);
+    	//过去30天时间
+    	long begin30Timestamp = ShyyDateUtil.getPastDate(30);
+    	
+    	
+		Map<String,Map<String,Object>> resultMap = new HashMap<>();
+		Map<String,Object> webTitle = new HashMap<String, Object>();
+		webTitle.put("yesterday", 100);
+		webTitle.put("today", 120);
+		resultMap.put("yesterday", webTitle);
+		Map<String,Object> ccTitle = new HashMap<String, Object>();
+		ccTitle.put("yesterday", 200);
+		ccTitle.put("today", 220);
+		resultMap.put("today", ccTitle);
+		Map<String,Object> visitTitle = new HashMap<String, Object>();
+		visitTitle.put("yesterday", 300);
+		visitTitle.put("today", 320);
+		visitTitle.put("future", 32000);
+		resultMap.put("seven", visitTitle);
+		Map<String,Object> other = new HashMap<String, Object>();
+		visitTitle.put("yesterday", 300);
+		visitTitle.put("today", 320);	
+		resultMap.put("other", visitTitle);
+
+		
+		List<String> time = new ArrayList<>();
+		time.add("11-28");
+		time.add("11-29");
+		time.add("11-30");
+		time.add("11-31");
+		time.add("12-01");
+		List<Integer> webValue = new ArrayList<>();
+		webValue.add(18);
+		webValue.add(28);
+		webValue.add(10);
+		webValue.add(39);
+		webValue.add(11);
+		Map<String,Object> webChar = new HashMap<String, Object>();
+		webChar.put("time", time);
+		webChar.put("value", webValue);
+		resultMap.put("webChar", webChar);
+		
+		
+		List<Integer> ccValue = new ArrayList<>();
+		ccValue.add(88);
+		ccValue.add(98);
+		ccValue.add(80);
+		ccValue.add(78);
+		ccValue.add(100);
+		Map<String,Object> ccChar = new HashMap<String, Object>();
+		ccChar.put("time", time);
+		ccChar.put("value", ccValue);
+		resultMap.put("ccChar", ccChar);
+		
+		
+		List<Integer> visitValue = new ArrayList<>();
+		visitValue.add(100);
+		visitValue.add(120);
+		visitValue.add(110);
+		visitValue.add(200);
+		visitValue.add(30);
+		Map<String,Object> visitChar = new HashMap<String, Object>();
+		visitChar.put("time", time);
+		visitChar.put("value", visitValue);
+		resultMap.put("visitChar", visitChar);
+		
+		return resultMap;
+	}
+
+}

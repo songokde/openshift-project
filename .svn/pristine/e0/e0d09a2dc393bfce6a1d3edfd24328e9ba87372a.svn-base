@@ -1,0 +1,302 @@
+package com.newcloud.waf.storage.dao;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+
+import com.newcloud.waf.storage.entity.BaseEntity;
+import com.newcloud.waf.storage.entity.ComBox;
+
+public interface IBaseDAO {
+	
+	/**
+	 * 保存一个对象
+	 * 
+	 * @param o
+	 * @return
+	 */
+    public boolean save(BaseEntity o) throws Exception;
+    
+    /**
+     * 批量新增
+     *
+     * @param list
+     */
+    public boolean saveList(List<?> list) throws Exception;
+
+    /**
+     * 删除一个对象
+     *
+     * @param o
+     */
+    public boolean delete(BaseEntity o) throws Exception;
+
+    /**
+     * 更新一个对象
+     *
+     * @param o
+     */
+    public boolean update(BaseEntity o) throws Exception;
+    
+    /**
+     * 批量更新
+     * 
+     * @param list
+     * @return
+     * @throws Exception
+     */
+    public boolean updateList(List<?> list) throws Exception;
+    
+    /**
+     * 保存或更新对象
+     *
+     * @param o
+     */
+    public boolean saveOrUpdate(BaseEntity o) throws Exception;
+    
+    /**
+     * 获得一个对象(根据主键)
+     *
+     * @param c  对象类型
+     * @param id
+     * @return Object
+     */
+    public <T> T findInfo(Class<?> c, Serializable id) throws Exception;
+    
+    
+    /**
+     * 获得一个对象(唯一索引别名占位)
+     *
+     * @param hql
+     * @param param
+     * @return Object
+     */
+    public <T> T findInfo(String hql, String alias, Object param) throws Exception;
+    
+    /**
+     * 获得一个对象(别名占位，取第一条)
+     * @param hql
+     * @param alias
+     * @param param
+     * @return
+     * @throws Exception
+     */
+    public <T> T findInfoLimit(String hql, String alias, Object param) throws Exception;
+
+    /**
+     * 获得一个对象(唯一索引别名占位)
+     *
+     * @param hql
+     * @param param
+     * @return Object
+     */
+    public <T> T findInfo(String hql, Map<String, Object> param) throws Exception;
+    
+    /**
+     * 查询集合
+     * 
+     * @param <T>
+     *
+     * @param hql
+     * @return
+     */
+    public <T> List<T> findHQL(String hql) throws Exception;
+    
+    
+    /**
+     * 查询集合(别名占位)
+     *
+     * @param hql
+     * @return
+     */
+    public <T> List<T> findHQL(String hql,String alias,Object param) throws Exception;
+    
+    /**
+     * 查询集合(别名占位)
+     *
+     * @param hql
+     * @param param
+     * @return
+     */
+    public <T> List<T> findHQL(String hql,Integer offset,Integer limit,String alias,Object param) throws Exception;
+    
+    /**
+     * 查询集合(别名占位)
+     *
+     * @param hql
+     * @param param
+     * @return
+     */
+    public <T> List<T> findHQL(String hql, Map<String, Object> param) throws Exception;
+    
+    /**
+     * 查询集合(别名占位)
+     *
+     * @param hql
+     * @param param
+     * @return
+     */
+    public <T> List<T> findHQL(String hql,Integer offset,Integer limit,Map<String, Object> param) throws Exception;
+    
+    /**
+     * 查询记录数(别名占位)
+     * 
+     * @param hql
+     * @param alias
+     * @param param
+     * @return
+     * @throws Exception
+     */
+    public Long findHQLCount(String hql, String alias, Object param) throws Exception;
+    
+    /**
+     * 查询记录数(别名占位)
+     * 
+     * @param hql
+     * @param alias
+     * @param param
+     * @return
+     * @throws Exception
+     */
+    public Long findHQLCount(String hql, Map<String, Object> param) throws Exception;
+    
+	/**
+	 * 
+	 * @param hql
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<Integer,Long> findHQLGroupCount(String hql,Map<String, Object> param) throws Exception;
+
+    /**
+     * 更新语句(别名占位)
+     * 
+     * @param hql
+     * @param alias
+     * @param param
+     * @return
+     * @throws Exception
+     */
+	public Integer updateHql(String hql, String alias, Object param) throws Exception;
+	
+    /**
+     * 更新语句(?占位)
+     * 
+     * @param hql
+     * @param alias
+     * @param param
+     * @return
+     * @throws Exception
+     */
+	public Integer updateHql(String hql,Object[] param) throws Exception;
+	
+    /**
+     * 更新语句(别名占位)
+     * 
+     * @param hql
+     * @param alias
+     * @param param
+     * @return
+     * @throws Exception
+     */
+	public Integer updateHql(String hql, Map<String, Object> param) throws Exception;
+	
+	/**
+	 * 获取下拉列表框(别名占位)
+	 * 
+	 * @param c
+	 * @param fieldId
+	 * @param fieldName
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ComBox> findCombox(Class<?> c, String fieldId,String fieldName) throws Exception;
+	
+	/**
+	 * 获取下拉列表框(别名占位)
+	 * 
+	 * @param c
+	 * @param fieldId
+	 * @param fieldName
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ComBox> findCombox(Class<?> c, String fieldId,String fieldName,Map<String, Object> param) throws Exception;
+	
+	/**
+	 * 获取下拉列表框(别名占位)
+	 * 
+	 * @param c
+	 * @param fieldId
+	 * @param fieldName
+	 * @param condition
+	 * @param alias
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ComBox> findCombox(Class<?> c, String fieldId,String fieldName,String condition, Map<String, Object> param) throws Exception;
+	
+	/**
+	 * 获取下拉列表框(别名占位)
+	 * 
+	 * @param c
+	 * @param fieldId
+	 * @param fieldName
+	 * @param condition
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ComBox> findCombox(Class<?> c, String fieldId,String fieldName,String condition,String alias, Object param) throws Exception;
+	
+    /**
+     * 获取下拉框 ？号占位符
+     * @param c
+     * @param fieldId
+     * @param fieldName
+     * @param condition
+     * @param param
+     * @return
+     * @throws Exception
+     */
+	List<ComBox> findCombox(Class<?> c, String fieldId, String fieldName, String condition, Object[] param) throws Exception;
+	
+	
+    /**
+     * 查询单个字段(别名占位)
+     *
+     * @param hql
+     * @param param
+     * @return
+     */
+    public List<Object> findClomnHQL(String hql, String alias, Object param) throws Exception;
+    
+    /**
+     * 查询单个字段(别名占位)
+     * 
+     * @param hql
+     * @param param
+     * @return
+     * @throws Exception
+     */
+    public List<Object> findClomnHQL(String hql, Map<String, Object> param) throws Exception;
+    
+    /**
+     * 原生SQL查询
+     * 
+     * @param sql
+     * @return
+     * @throws Exception
+     */
+    public List<Object[]> findSQLString(String sql) throws Exception;
+    
+    /**
+     * 原生SQL查询
+     * 
+     * @param sql
+     * @return
+     * @throws Exception
+     */
+    public List<Object> findCloumnSQLString(String sql) throws Exception;
+
+}

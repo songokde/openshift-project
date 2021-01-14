@@ -1,0 +1,19 @@
+package com.newcloud.waf.service.impl;
+
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+import com.newcloud.waf.service.IOverViewService;
+
+@Service
+public class OverViewService extends BaseService implements IOverViewService {
+
+	@Override
+	public Map<String,Integer>  findRequsetCountByTime(long beginTimestamp, long endTimestamp) {
+		return null;
+	}
+
+	
+
+}

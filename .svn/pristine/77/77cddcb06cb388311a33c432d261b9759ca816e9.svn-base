@@ -1,0 +1,77 @@
+$(function(){
+	searchCcTable();
+});
+
+function searchCcTable() {
+	var data ={
+			"count": 1,
+			 "data":[
+			 	{
+			 		"ruleName":"",
+					"URL":"",
+					"checkTime":"",
+					"visits":"",
+					"matchRules": "",
+					"blockType": "",
+					"duration": "",
+					"action": "",
+			 	}
+			 ]
+	}
+	$("#ccConfigTab").bootstrapTable('destroy').bootstrapTable({
+	  	contentType: "application/x-www-form-urlencoded", 
+	  	data:data.data,
+	    striped: true,  
+	    pagination: false,  
+	    singleSelect: false,  
+	    clickToSelect:true,  
+	    showColumns: false,  
+	    search: false,   
+	    silent: true,  
+	    pageSize: 5,  
+	    pageNumber:1, 
+	    sidePagination: "client",  
+	    pageList:[10, 25, 50, 100],  
+	    columns: [{
+	        field: "ruleName",
+	        title: "规则名称",
+	        width : $(this).width() * 0.15
+	    },  {
+	        field: "URL",
+	        title: "URL",
+	        width : $(this).width() * 0.20
+	    },  {
+	    	field: "checkTime",
+	    	title: "检测时长",
+	    	width : $(this).width() * 0.08
+	    },  {
+	    	field: "visits",
+	    	title: "单一IP访问次数",
+	    	width : $(this).width() * 0.08
+	    },  {
+	    	field: "matchRules",
+	    	title: "匹配规则",
+	    	width : $(this).width() * 0.15
+	    },  {
+	    	field: "blockType",
+	    	title: "阻断类型",
+	    	width : $(this).width() * 0.08
+	    },  {
+	    	field: "duration",
+	    	title: "封禁时长",
+	    	width : $(this).width() * 0.08
+	    },  {
+	        field: "action",
+	        title: "操作",
+	        width : $(this).width() * 0.08,
+	        formatter : function() {
+            	return 	" <button type='button' class='btn btn-success btn-xs'\">编辑</button>"+
+            	        "   <button type='button' class='btn btn-danger btn-xs'\">删除</button>";
+			}
+	    }]
+	});
+}
+
+function addRule(){
+	$("#ccRuleModal").modal("show");
+}

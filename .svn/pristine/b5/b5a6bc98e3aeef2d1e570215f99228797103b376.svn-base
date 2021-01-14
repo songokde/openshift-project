@@ -1,0 +1,139 @@
+package com.newcloud.waf.storage.entity.waf;
+
+import com.newcloud.waf.storage.entity.BaseEntity;
+
+/**
+ * url攻击表
+ * @author song
+ *
+ */
+public class WafAttackUrl extends BaseEntity{
+	private static final long serialVersionUID = 2253130519348764636L;
+	
+	private Integer wauId;
+	
+	private Long wauTimeStamp;
+	
+	private Long  wauDate;
+	 
+	private Integer wauDniId;
+	
+	private String wauAttackUrl;
+	
+	private String wauType;
+	
+	private String wauMethod;
+	
+	private Integer wauCount;
+	
+	private String wauRequest;
+	
+	private Long wauBandwidth;
+
+	
+	public WafAttackUrl() {
+		super();
+	}
+
+
+	public Integer getWauId() {
+		return wauId;
+	}
+
+
+	public void setWauId(Integer wauId) {
+		this.wauId = wauId;
+	}
+
+
+	public Long getWauTimeStamp() {
+		return wauTimeStamp;
+	}
+
+
+	public void setWauTimeStamp(Long wauTimeStamp) {
+		this.wauTimeStamp = wauTimeStamp;
+	}
+
+
+	public Long getWauDate() {
+		return wauDate;
+	}
+
+
+	public void setWauDate(Long wauDate) {
+		this.wauDate = wauDate;
+	}
+
+
+	public Integer getWauDniId() {
+		return wauDniId;
+	}
+
+
+	public void setWauDniId(Integer wauDniId) {
+		this.wauDniId = wauDniId;
+	}
+
+
+	public String getWauAttackUrl() {
+		return wauAttackUrl;
+	}
+
+
+	public void setWauAttackUrl(String wauAttackUrl) {
+		this.wauAttackUrl = wauAttackUrl;
+	}
+
+
+	public String getWauType() {
+		return wauType;
+	}
+
+
+	public void setWauType(String wauType) {
+		this.wauType = wauType;
+	}
+
+
+	public String getWauMethod() {
+		return wauMethod;
+	}
+
+
+	public void setWauMethod(String wauMethod) {
+		this.wauMethod = wauMethod;
+	}
+
+
+	public Integer getWauCount() {
+		return wauCount;
+	}
+
+
+	public void setWauCount(Integer wauCount) {
+		this.wauCount = wauCount;
+	}
+
+
+	public String getWauRequest() {
+		return wauRequest;
+	}
+
+
+	public void setWauRequest(String wauRequest) {
+		this.wauRequest = wauRequest;
+	}
+
+
+	public Long getWauBandwidth() {
+		return wauBandwidth;
+	}
+
+
+	public void setWauBandwidth(Long wauBandwidth) {
+		this.wauBandwidth = wauBandwidth;
+	}
+
+	
+}

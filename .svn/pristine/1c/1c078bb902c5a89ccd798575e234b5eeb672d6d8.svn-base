@@ -1,0 +1,121 @@
+$(function(){
+	table();
+});
+
+function table() {
+	$("#domainProtectionTab").bootstrapTable('destroy').bootstrapTable({
+	  	contentType: "application/x-www-form-urlencoded", 
+	  	url: "config/list",
+	    striped: true,  
+	    pagination: false,  
+	    singleSelect: false,  
+	    clickToSelect:true,  
+	    showColumns: false,  
+	    search: false,   
+	    silent: true,  
+	    pageSize: 5,  
+	    pageNumber:1, 
+	    sidePagination: "server",  
+	    pageList:[10, 25, 50, 100],  
+	    columns: [{
+	        field: "wdiDname",
+	        title: "域名名称",
+	        width : $(this).width() * 0.15
+	    },  {
+	        field: "wdiWebShield",
+	        title: "WEB攻击防护",
+	        width : $(this).width() * 0.15,
+	        formatter : function(value) {
+	        	if(value=="N"){
+	        		return "关闭";
+	        	}else{
+	        		return "开启";
+	        	}
+			}
+	    },  {
+	    	field: "wdiExactIds",
+	    	title: "精准打击状态",
+	    	width : $(this).width() * 0.15,
+	    	formatter : function(value) {
+	        	if(value==""){
+	        		return "关闭";
+	        	}else{
+	        		return "开启";
+	        	}
+			}
+	    },  {
+	    	field: "wdiCcIds",
+	    	title: "cc防护状态",
+	    	width : $(this).width() * 0.15,
+	    	formatter : function(value) {
+	        	if(value==""){
+	        		return "关闭";
+	        	}else{
+	        		return "开启";
+	        	}
+			}
+	    },  {
+	    	field: "wdiIpSegment",
+	    	title: "ip禁用状态",
+	    	width : $(this).width() * 0.15,
+	    	formatter : function(value) {
+	        	if(value==""){
+	        		return "关闭";
+	        	}else{
+	        		return "开启";
+	        	}
+			}
+	    },  {
+	        field: "opt",
+	        title: "操作",
+	        formatter : function(value,row,index) {
+            	return 	" <button type='button' class='btn btn-info btn-xs'  onclick='protectionConfig("+row.wdiDniId+")'\">防护配置</button>";
+			}
+	    }]
+	});
+}
+
+//修改
+function protectionConfig(id){
+	location.href="config/webProtection?param1="+id;
+}
+
+//添加
+function addDomain(){
+	location.href="config/webProtection?param1=-1";
+}
+
+/*function formSubmit(){
+	$(".save").attr("disabled",true);
+	var type = $('input[name="useAgent"]:checked').val();
+	if(type =='0'){
+		var useAgent = $("#useAgentA").val();
+	}else{
+		var useAgent = $("#useAgentB").val();
+	}
+	var type2 = $('input[name="port"]:checked').val();
+	if(type =='0'){
+		var port = $("#portA").val();
+	}else{
+		var port = $("#portB").val();
+	}
+	
+	var postdata={
+		id : $("#id").val(),
+		domain : $("#domain").val(),	
+		protocolType :	$("#protocolType").val(),
+		resourceIp  :	$("#resourceIp").val(),
+		useAgent: useAgent,
+		port : port,
+	};
+	$.post("",postdata,function(data){
+		$(".save").attr("disabled",false);
+		if (data == "OK") {
+			$("#workorderModal").modal("hide");
+			swal("提示信息","数据录入成功","success");
+			$("#domainProtectionTab").bootstrapTable("refresh");
+		} else{
+			swal("提示信息",data.toString(),"error");
+		}
+	});
+}*/

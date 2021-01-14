@@ -1,0 +1,347 @@
+package com.newcloud.waf.storage.dao.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import com.newcloud.waf.connection.ConnectionFactory;
+import com.newcloud.waf.storage.dao.IOverViewDAO;
+import com.newcloud.waf.storage.dao.util.OverViewSqlUtil;
+import com.newcloud.waf.storage.dao.util.ShyyDataUtil;
+import com.newcloud.waf.storage.entity.waf.WafAttackIp;
+import com.newcloud.waf.util.ShyyDateUtil;
+@Repository
+public class OverViewDAO implements IOverViewDAO{
+	@Override
+	public Map<String, Map<String, Long>> findRecentMapByTime(Long begin7Timestamp, Long endTimestamp,Integer custId)
+			throws Exception {
+		Map<String, Map<String, Long>> resultMap = new HashMap<String, Map<String,Long>>();
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			String sqlSelect=OverViewSqlUtil.findRecentMapSql(begin7Timestamp, endTimestamp, custId);
+			conn = ConnectionFactory.getFactory().getWafConnection();
+			ps = conn.prepareStatement(sqlSelect);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				String key = rs.getString("wai_type");
+				String time = ShyyDateUtil.getDateTime(rs.getLong("wai_timestamp"));
+				Long count = rs.getLong("count");
+				if(resultMap.containsKey(key)) {
+					if(resultMap.get(key).containsKey(time)) {
+						Long newCount = resultMap.get(key).get(time)+count;
+						resultMap.get(key).replace(time,resultMap.get(key).get(time),newCount);
+					}else {
+						resultMap.get(key).put(time, count);
+					}
+				}else {
+					 Map<String, Long> map =new HashMap<>();
+					 map.put(key, count);
+					 resultMap.put(key, map);
+				}
+			}
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			ConnectionFactory.close(conn, ps, rs);
+		}
+		return null;
+	}
+
+	@Override
+	public Map<String,Map<String, Object>> findTopIp(Integer domainId, Long beginTime,Long endTime,Integer custId) throws Exception {
+		Map<String,Map<String, Object>> resultMap = new HashMap<>();
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			String sqlSelect=OverViewSqlUtil.findTopIpSql(domainId,beginTime,endTime, custId);
+			conn = ConnectionFactory.getFactory().getWafConnection();
+			ps = conn.prepareStatement(sqlSelect);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				String key = rs.getString("wai_type");
+				if(resultMap.containsKey(key)) {
+					resultMap.get(key).put(rs.getString("wai_nodeip"), rs.getInt("count"));
+				}else {
+					Map<String, Object> map = new HashMap<>();
+					map.put(rs.getString("wai_nodeip"), rs.getInt("count"));
+					resultMap.put(key,map);
+				}
+			}
+			
+		} finally {
+			ConnectionFactory.close(conn, ps, rs);
+		}
+		return null;
+	}
+
+	@Override
+	public List<WafAttackIp> findAttackList(Integer domainId, String type, Integer beginTime, Integer endTime,Integer custId) throws Exception {
+		List<WafAttackIp> list =new ArrayList<WafAttackIp>();
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			String sqlSelect=OverViewSqlUtil.findAttackIpSql(domainId, type,beginTime,endTime, custId);
+			conn = ConnectionFactory.getFactory().getWafConnection();
+			ps = conn.prepareStatement(sqlSelect);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				WafAttackIp ip = new WafAttackIp();
+				ip.setWaiArea(rs.getString("wai_area"));
+				ip.setWaiAttackIp(rs.getString("wai_attackip"));
+				ip.setWaiBandwidth(rs.getLong("wai_bandwidth"));
+				ip.setWaiCount(rs.getInt("wai_count"));
+				ip.setWaiDate(rs.getLong("wai_date"));
+				ip.setWaiDniId(rs.getInt("wai_dniid"));
+				ip.setWaiId(rs.getInt("wai_id"));
+				ip.setWaiMethod(rs.getString("wai_method"));
+				ip.setWaiNodeIp(rs.getString("wai_nodeip"));
+				ip.setWaiTimeStamp(rs.getLong("wai_timestamp"));
+				ip.setWaiType(rs.getString("wai_type"));
+				list.add(ip);
+			}
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			ConnectionFactory.close(conn, ps, rs);
+		}
+		return list;
+	}
+
+	@Override
+	public Map<String, Object> findBandWidthMap(Integer beginTime, Integer endTimestamp, Integer custId,String type,Integer domainId)
+			throws Exception {
+		Map<String, Object>  resultMap = new HashMap<>();
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			String sqlSelect=OverViewSqlUtil.findBandWidthSql(beginTime, endTimestamp,custId,type,domainId);
+			conn = ConnectionFactory.getFactory().getWafConnection();
+			ps = conn.prepareStatement(sqlSelect);
+			rs = ps.executeQuery();
+			
+			while (rs.next()) {
+				Long bandWidth = rs.getLong("wau_bandwidth");
+				String time = ShyyDateUtil.getDateTime(rs.getLong("wau_timestamp"));
+				if(resultMap.containsKey(time)) {
+					Long newBandWidth = Long.valueOf(resultMap.get(time).toString())+rs.getLong("wau_bandwidth");
+					resultMap.replace(time, resultMap.get(time), newBandWidth);
+				}else {
+					resultMap.put(time, bandWidth);
+				}
+			}
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			ConnectionFactory.close(conn, ps, rs);
+		}
+		return resultMap;
+	}
+
+	@Override
+	public WafAttackIp findAttackIpInfo(Integer id,Integer custId) throws Exception {
+		WafAttackIp ip = new WafAttackIp();
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			String sqlSelect="select * form "+ShyyDataUtil.formatCustomerID(custId)+".waf_attack_ip where wai_id="+id+"";
+			conn = ConnectionFactory.getFactory().getWafConnection();
+			ps = conn.prepareStatement(sqlSelect);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				ip.setWaiArea(rs.getString("wai_area"));
+				ip.setWaiAttackIp(rs.getString("wai_attackip"));
+				ip.setWaiBandwidth(rs.getLong("wai_bandwidth"));
+				ip.setWaiCount(rs.getInt("wai_count"));
+				ip.setWaiDate(rs.getLong("wai_date"));
+				ip.setWaiDniId(rs.getInt("wai_dniid"));
+				ip.setWaiId(rs.getInt("wai_id"));
+				ip.setWaiMethod(rs.getString("wai_method"));
+				ip.setWaiNodeIp(rs.getString("wai_nodeip"));
+				ip.setWaiTimeStamp(rs.getLong("wai_timestamp"));
+				ip.setWaiType(rs.getString("wai_type"));
+			}
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			ConnectionFactory.close(conn, ps, rs);
+		}
+		return ip;
+	}
+
+//	@Override
+//	public WafAttackUrl findAttackUrlInfo(Integer id,Integer custId) throws Exception {
+//		WafAttackUrl url = new WafAttackUrl();
+//		Connection conn = null;
+//		PreparedStatement ps = null;
+//		ResultSet rs = null;
+//		try {
+//			String sqlSelect="select * form "+ShyyDataUtil.formatCustomerID(custId)+".waf_attack_url where wau_id="+id+"";
+//			conn = ConnectionFactory.getFactory().getWafConnection();
+//			ps = conn.prepareStatement(sqlSelect);
+//			rs = ps.executeQuery();
+//			while (rs.next()) {
+//				url.setWauBandwidth(rs.getLong("wau_bandwidth"));
+//				url.setWauCount(rs.getInt("wau_count"));
+//				url.setWauDate(rs.getLong("wau_date"));
+//				url.setWauDniId(rs.getInt("wau_dniid"));
+//				url.setWauId(rs.getInt("wau_id"));
+//				url.setWauMethod(rs.getString("wau_method"));
+//				url.setWauTimeStamp(rs.getLong("wau_timestamp"));
+//				url.setWauType(rs.getString("wau_type"));
+//				url.setWauAttackUrl(rs.getString("wau_attackurl"));
+//				url.setWauRequest(rs.getString("wau_request"));
+//			}
+//		} catch (SQLException e) {
+//			throw e;
+//		} finally {
+//			ConnectionFactory.close(conn, ps, rs);
+//		}
+//		return url;
+//	}
+
+//	@Override
+//	public List<WafAttackCode> findAttackCodeList(Integer domainId, String type, Long beginTime, Long endTime,
+//			Integer custId) throws Exception {
+//		List<WafAttackCode> list =new ArrayList<WafAttackCode>();
+//		Connection conn = null;
+//		PreparedStatement ps = null;
+//		ResultSet rs = null;
+//		try {
+//			String sqlSelect=OverViewSqlUtil.findAttackCodeSql(domainId, type,beginTime,endTime, custId);
+//			conn = ConnectionFactory.getFactory().getWafConnection();
+//			ps = conn.prepareStatement(sqlSelect);
+//			rs = ps.executeQuery();
+//			while (rs.next()) {
+//				WafAttackCode code = new WafAttackCode();
+//				code.setWacCount(rs.getInt("wac_count"));
+//				code.setWacDate(rs.getLong("wac_date"));
+//				code.setWacDniId(rs.getInt("wac_dniid"));
+//				code.setWacId(rs.getInt("wac_id"));
+//				code.setWacMethod(rs.getString("wac_method"));
+//				code.setWacTimeStamp(rs.getLong("wac_timestamp"));
+//				code.setWacType(rs.getString("wac_type"));
+//				code.setWacCode(rs.getInt("wac_code"));
+//				code.setWacNodeIp(rs.getString("wac_nodeip"));
+//				list.add(code);
+//			}
+//		} catch (SQLException e) {
+//			throw e;
+//		} finally {
+//			ConnectionFactory.close(conn, ps, rs);
+//		}
+//		return list;
+//	}
+
+	@Override
+	public Map<Integer, Long> findCodeMap(long beginTimestamp, long endTimestamp,String type,Integer domainId, Integer custId) throws Exception {
+		Map<Integer, Long>  resultMap = new HashMap<>();
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			String sqlSelect=OverViewSqlUtil.findCodeMapSql(beginTimestamp, endTimestamp,type,domainId,custId);
+			conn = ConnectionFactory.getFactory().getWafConnection();
+			ps = conn.prepareStatement(sqlSelect);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				resultMap.put(rs.getInt("wac_code"), rs.getLong("wac_count"));
+			}
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			ConnectionFactory.close(conn, ps, rs);
+		}
+		return resultMap;
+	}
+
+	@Override
+	public Map<String, Integer> findCountByType(Integer domainId, String type, Integer beginTimestamp,
+			Integer endTimestamp, Integer custId) throws Exception {
+		Map<String, Integer>  resultMap = new HashMap<>();
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			String sqlSelect=OverViewSqlUtil.findCountByTypeSql(beginTimestamp, endTimestamp,type,domainId,custId);
+			conn = ConnectionFactory.getFactory().getWafConnection();
+			ps = conn.prepareStatement(sqlSelect);
+			rs = ps.executeQuery();
+			Integer count=0;
+			Integer ipCount=0;
+			while (rs.next()) {
+				count+= rs.getInt("count");
+				ipCount++;
+			}
+			resultMap.put("count", count);
+			resultMap.put("ipCount", ipCount);
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			ConnectionFactory.close(conn, ps, rs);
+		}
+		return resultMap;
+	}
+
+	@Override
+	public Integer findUrlCountByType(Integer domainId, String type, Integer beginTimestamp, Integer endTimestamp,
+			Integer custId) throws Exception {
+		Integer count=0;
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			String sqlSelect=OverViewSqlUtil.findUrlCountByType(beginTimestamp, endTimestamp,type,domainId,custId);
+			conn = ConnectionFactory.getFactory().getWafConnection();
+			ps = conn.prepareStatement(sqlSelect);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				count = rs.getInt("count");
+			}
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			ConnectionFactory.close(conn, ps, rs);
+		}
+		return count;
+	}
+
+	@Override
+	public Map<String, Long> findAreaMap(Integer beginTimestamp, Integer endTimestamp, String type, Integer domainId,
+			Integer custId) throws Exception {
+		Map<String, Long>  resultMap = new HashMap<>();
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			String sqlSelect=OverViewSqlUtil.findAreaMapSql(beginTimestamp, endTimestamp,type,domainId,custId);
+			conn = ConnectionFactory.getFactory().getWafConnection();
+			ps = conn.prepareStatement(sqlSelect);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				resultMap.put(rs.getString("wai_area"), rs.getLong("count"));
+			}
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			ConnectionFactory.close(conn, ps, rs);
+		}
+		return resultMap;
+	}
+
+
+	
+	
+}

@@ -1,0 +1,102 @@
+package com.newcloud.waf.job;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.text.DecimalFormat;
+import java.util.HashSet;
+import java.util.Set;
+
+
+/**
+ * 创建客户WAF数据库
+ * 
+ * @author song
+ *
+ */
+public class CreateCdnDatabaseProxyJob {
+	
+	public static String[] TABLE={
+		"CREATE TABLE waf_attack_code (wac_id int(11) NOT NULL,wac_timestamp int(10) NOT NULL COMMENT '时间戳',wac_date int(11) NOT NULL COMMENT '日期',wac_dniid mediumint(8) NOT NULL COMMENT '域名',wac_nodeip varchar(15) NOT NULL COMMENT '节点ip',wac_type tinyint(3) NOT NULL COMMENT '攻击类型',wac_method tinyint(3) NOT NULL COMMENT '攻击方式',wac_count bigint(20) NOT NULL COMMENT '请求数',wac_code tinyint(3) NOT NULL COMMENT '状态码',PRIMARY KEY (wac_id)) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='状态码表'",
+		"CREATE TABLE waf_attack_ip (wai_id int(11) NOT NULL AUTO_INCREMENT,wai_timestamp int(10) unsigned NOT NULL COMMENT '时间戳',wai_date int(11) NOT NULL COMMENT '时间',wai_dniid mediumint(8) unsigned zerofill NOT NULL COMMENT '域名id',wai_bandwidth bigint(20) NOT NULL COMMENT '带宽',wai_attackip varchar(15) NOT NULL COMMENT '攻击ip',wai_nodeip varchar(15) NOT NULL COMMENT '被攻击节点ip',wai_type tinyint(3) NOT NULL COMMENT '攻击类型web/cc/visit',wai_method tinyint(3) NOT NULL COMMENT '攻击方式  sql',wai_count bigint(20) NOT NULL COMMENT '请求数',wai_area tinyint(3) NOT NULL COMMENT '攻击ip归属区域',wai_isp tinyint(3) NOT NULL COMMENT '运营商',PRIMARY KEY (wai_id)) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='waf_攻击ip表'",
+		"CREATE TABLE waf_attack_url (wau_id int(11) NOT NULL AUTO_INCREMENT,wau_timestamp int(10) NOT NULL COMMENT '时间戳',wau_date int(11) NOT NULL COMMENT '日期',wau_dniid mediumint(8) NOT NULL COMMENT '域名id',wau_bandwidth bigint(20) NOT NULL COMMENT '带宽',wau_count bigint(20) NOT NULL COMMENT '请求数',wau_attackurl varchar(255) NOT NULL COMMENT '攻击url',wau_type tinyint(3) NOT NULL COMMENT '攻击类型',wau_method tinyint(3) NOT NULL COMMENT '攻击方式',wau_request tinyint(3) NOT NULL COMMENT '请求类型 post/get..',PRIMARY KEY (wau_id)) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='url攻击表'"
+	};
+
+	public static void main(String[] args) throws Exception
+	{
+		//获取客户
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		Set<Integer> idSet = new HashSet<Integer>();
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = DriverManager.getConnection("jdbc:mysql://116.10.189.61:33606/excloud_waf", "waftest", "SHtestYX");
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery("select DISTINCT(wdi_cusid) from waf_domain_info");
+			while(rs.next()){
+				idSet.add(rs.getInt("wdi_cusid"));
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}finally{
+			try{
+				if(rs!=null){
+					rs.close();
+				}
+				if(stmt!= null){
+					stmt.close();
+		        }
+				if(conn!= null){
+					conn.close();
+				}
+			}catch (Exception e) {
+			}
+		}
+		idSet.add(0);
+		//创建客户表
+		DecimalFormat df = new DecimalFormat("00000000");
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/", "root", "admin");
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery("show databases like 'waf%'");
+			while(rs.next()){
+				String dbName = rs.getString(1);
+				dbName = dbName.replace("waf", "");
+				Integer custId = Integer.parseInt(dbName);
+				idSet.remove(custId);
+			}
+			rs.close();
+			for(Integer custId:idSet){
+				String dbName = "waf"+df.format(custId);
+				String sql0="create database "+dbName;
+				String sql1="use "+dbName;
+				stmt.addBatch(sql0);
+				stmt.addBatch(sql1);
+				for(String tabsql:TABLE){
+					stmt.addBatch(tabsql);
+				}
+				stmt.executeBatch();
+				stmt.clearBatch();
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			try{
+				if(rs!=null){
+					rs.close();
+				}
+				if(stmt!= null){
+					stmt.close();
+		        }
+				if(conn!= null){
+					conn.close();
+				}
+			}catch (Exception e) {
+			}
+		}
+	}
+
+}

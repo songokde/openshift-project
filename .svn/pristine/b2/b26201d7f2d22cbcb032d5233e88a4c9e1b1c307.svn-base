@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+		http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+	    http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+		
+	<!-- 扫描注解包 -->
+	<context:component-scan base-package="com.newcloud.waf.service"/>
+    <context:component-scan base-package="com.newcloud.waf.storage.dao"/>
+	
+	
+	
+	<!-- 数据源配置-->
+	<bean id="dataSource_info" class="org.springframework.jdbc.datasource.DriverManagerDataSource">  
+        <property name="driverClassName">  
+            <value>org.logicalcobwebs.proxool.ProxoolDriver</value>  
+        </property>  
+        <property name="url">
+            <value>proxool.control</value>  
+        </property>
+    </bean>
+    <bean id="dataSource_waf" class="org.springframework.jdbc.datasource.DriverManagerDataSource">  
+        <property name="driverClassName">  
+            <value>org.logicalcobwebs.proxool.ProxoolDriver</value>  
+        </property>  
+        <property name="url">
+            <value>proxool.waf</value>  
+        </property>
+    </bean>
+	 <!-- 动态获取数据源 -->
+    <bean id="dynamicDataSource" class="com.newcloud.waf.storage.sessionFactory.DynamicDataSource">  
+        <property name="targetDataSources">  
+            <map key-type="java.lang.String">  
+                <entry key="dataSourceInfo" value-ref="dataSource_info"></entry>  
+                <entry key="dataSourceWaf" value-ref="dataSource_waf"></entry>  
+            </map>  
+        </property>  
+        <property name="defaultTargetDataSource" ref="dataSource_waf">  
+        </property>  
+    </bean>
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dynamicDataSource"></property>
+		<property name="mappingDirectoryLocations">
+			<list>
+				<value>classpath:/com/newcloud/waf/storage/entity/</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.format_sql">false</prop>
+                <prop key="hibernate.connection.autocommit">true</prop>  
+                <prop key="hibernate.cache.use_query_cache">false</prop>  
+                <prop key="hibernate.cache.use_second_level_cache">true</prop>  
+                <prop key="hibernate.cglib.use_reflection_optimizer">true</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<!-- 事物的控制 -->
+	<bean id="txManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">  
+        <property name="sessionFactory" ref="sessionFactory" />  
+    </bean>
+    <tx:advice id="txAdvice" transaction-manager="txManager">  
+        <tx:attributes>  
+            <tx:method name="save*" propagation="REQUIRED" />  
+            <tx:method name="add*" propagation="REQUIRED" />  
+            <tx:method name="edit*" propagation="REQUIRED" />  
+            <tx:method name="update*" propagation="REQUIRED" />  
+            <tx:method name="delete*" propagation="REQUIRED" /> 
+            <tx:method name="*" read-only="true"/> 
+        </tx:attributes>  
+    </tx:advice>  
+    <bean id="dataSourceInterceptor" class="com.newcloud.waf.storage.sessionFactory.DataSourceInterceptor" />
+    <aop:config>  
+        <aop:pointcut id="serviceOperation" expression="execution(* com.newcloud.waf.service..*.*(..))" />  
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceOperation" />  
+        <aop:aspect ref="dataSourceInterceptor" order="1">    
+            <aop:around pointcut-ref="serviceOperation" method="changeDB"/> 
+        </aop:aspect>
+	</aop:config>
+
+</beans>

@@ -1,0 +1,94 @@
+function showChart(){
+	var myChart = echarts.init(document.getElementById('webLineChart'));
+	// 指定图表的配置项和数据
+	option = {
+			 xAxis: {
+			        type: 'category',
+			        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+			    },
+			    yAxis: {
+			        type: 'value'
+			    },
+			    series: [{
+			        data: [820, 932, 901, 934, 1290, 1330, 1320],
+			        type: 'line'
+			    }]
+		};
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+    
+    var myChart2 = echarts.init(document.getElementById('ccLineChart'));
+    // 指定图表的配置项和数据
+    option = {
+    		 xAxis: {
+    		        type: 'category',
+    		        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    		    },
+    		    yAxis: {
+    		        type: 'value'
+    		    },
+    		    series: [{
+    		        data: [820, 932, 901, 934, 1290, 1330, 1320],
+    		        type: 'line',
+    		        lineStyle: {
+       				 color: 'yellow'
+    		        }
+    		    }]
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart2.setOption(option);
+    
+    var myChart3 = echarts.init(document.getElementById('controlLineChart'));
+    // 指定图表的配置项和数据
+    option = {
+    		 xAxis: {
+ 		        type: 'category',
+ 		        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+ 		    },
+ 		    yAxis: {
+ 		        type: 'value'
+ 		    },
+ 		    series: [{
+ 		        data: [820, 932, 901, 934, 1290, 1330, 1320],
+ 		        type: 'line',
+ 		        lineStyle: {
+    				 color: 'blue'
+ 		        }
+ 		    }]
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart3.setOption(option);
+}
+
+function searchPieTab(data){
+	$("#eventTab").bootstrapTable('destroy').bootstrapTable({
+	  	contentType: "application/x-www-form-urlencoded", 
+	  	data:data.data,
+        striped: true,  
+        pagination: false,  
+        singleSelect: false,  
+        clickToSelect:true,  
+        showColumns: false,  
+        search: false,   
+        silent: true,  
+        pageSize: 5,  
+        pageNumber:1, 
+        sidePagination: "client",  
+        pageList:[10, 25, 50, 100],  
+        columns: [{
+            field: "info",
+            title: "消息",
+            width : $(this).width() * 0.60
+        },  {
+            field: "time",
+            title: "日期",
+            width : $(this).width() * 0.20
+        },  {
+            field: "ratio",
+            title: "操作",
+            formatter : function() {
+            	return 	" <button type='button' class='btn ' \">查看详情</button>";
+			}
+        }]
+    });
+}

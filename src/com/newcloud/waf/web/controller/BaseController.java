@@ -1,0 +1,89 @@
+package com.newcloud.waf.web.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.newcloud.waf.service.IBaseService;
+import com.newcloud.waf.service.IUserService;
+import com.newcloud.waf.storage.entity.info.InfoCustomer;
+import com.newcloud.waf.storage.entity.info.InfoDomainname;
+import com.newcloud.waf.storage.entity.info.InfoOperator;
+import com.newcloud.waf.storage.entity.waf.WafCcInfo;
+import com.newcloud.waf.storage.entity.waf.WafDomainInfo;
+import com.newcloud.waf.storage.entity.waf.WafExactInfo;
+import com.newcloud.waf.util.ShyyConstant;
+
+/**
+ * 
+ * @author Fishwen
+ *
+ */
+@Controller
+public class BaseController {
+	
+	@Resource
+	protected IBaseService baseService;
+	@Resource
+	private IUserService userService;
+	
+
+	@Resource
+	private RedisTemplate<String, ?> redisTemplate;
+	
+	/**
+	 * 获取当前系统的SESSION
+	 * 
+	 * @return
+	 */
+	protected HttpSession getNowSession() {
+		ServletRequestAttributes srt = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+		return srt.getRequest().getSession();
+	}
+	
+	/**
+	 * 获取当前系统的登录账号
+	 * 
+	 * @return
+	 */
+	protected InfoOperator getNowUser() {
+		return (InfoOperator)getNowSession().getAttribute("SESSION_USER");
+	}
+	
+	/**
+	 * 获取当前查看的客户
+	 * 
+	 * @return
+	 */
+	protected InfoCustomer getNowCompany() {
+		InfoCustomer cust = new InfoCustomer();
+		cust.setCusId(55);
+		//return (InfoCustomer)getNowSession().getAttribute("SESSION_CUSTOMER");
+		return cust;
+	}
+	
+	/**
+	 * 获取当前登录客户的域名
+	 */
+	@SuppressWarnings("unchecked")
+	protected Map<Integer,String> getNowDomainMap() {
+		try {
+			return userService.findComboxMap(InfoDomainname.class, "dniId", "dniDname","dniCusid=?",new Object[] {55});
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//return (Map<Integer, String>) getNowSession().getAttribute("SESSION_DOMAIN");
+		return null;
+	}
+	
+
+}

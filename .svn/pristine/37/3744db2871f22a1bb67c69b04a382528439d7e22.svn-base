@@ -1,0 +1,154 @@
+package com.newcloud.waf.storage.entity.waf;
+
+import com.newcloud.waf.storage.entity.BaseEntity;
+
+/**
+ * ip攻击表
+ * @author song
+ *
+ */
+public class WafAttackIp extends BaseEntity{
+	private static final long serialVersionUID = 2253130519348764636L;
+	
+	private Integer waiId;
+	
+	private Long waiTimeStamp;
+	
+	private Long  waiDate;
+	 
+	private Integer waiDniId;
+	
+	private String waiNodeIp;
+	
+	private String waiAttackIp;
+	
+	private Integer waiType;
+	
+	private Integer waiMethod;
+	
+	private Long waiCount;
+	
+	private Integer waiArea;
+	
+	private Long waiBandwidth;
+
+	
+	public WafAttackIp() {
+		super();
+	}
+
+
+	public Integer getWaiId() {
+		return waiId;
+	}
+
+
+	public void setWaiId(Integer waiId) {
+		this.waiId = waiId;
+	}
+
+
+	public Long getWaiTimeStamp() {
+		return waiTimeStamp;
+	}
+
+
+	public void setWaiTimeStamp(Long waiTimeStamp) {
+		this.waiTimeStamp = waiTimeStamp;
+	}
+
+
+	public Long getWaiDate() {
+		return waiDate;
+	}
+
+
+	public void setWaiDate(Long waiDate) {
+		this.waiDate = waiDate;
+	}
+
+
+	public Integer getWaiDniId() {
+		return waiDniId;
+	}
+
+
+	public void setWaiDniId(Integer waiDniId) {
+		this.waiDniId = waiDniId;
+	}
+
+
+	public String getWaiNodeIp() {
+		return waiNodeIp;
+	}
+
+
+	public void setWaiNodeIp(String waiNodeIp) {
+		this.waiNodeIp = waiNodeIp;
+	}
+
+
+	public String getWaiAttackIp() {
+		return waiAttackIp;
+	}
+
+
+	public void setWaiAttackIp(String waiAttackIp) {
+		this.waiAttackIp = waiAttackIp;
+	}
+
+
+	public Integer getWaiType() {
+		return waiType;
+	}
+
+
+	public void setWaiType(Integer waiType) {
+		this.waiType = waiType;
+	}
+
+
+	public Integer getWaiMethod() {
+		return waiMethod;
+	}
+
+
+	public void setWaiMethod(Integer waiMethod) {
+		this.waiMethod = waiMethod;
+	}
+
+
+	public Long getWaiCount() {
+		return waiCount;
+	}
+
+
+	public void setWaiCount(Long waiCount) {
+		this.waiCount = waiCount;
+	}
+
+
+	public Integer getWaiArea() {
+		return waiArea;
+	}
+
+
+	public void setWaiArea(Integer waiArea) {
+		this.waiArea = waiArea;
+	}
+
+
+	public Long getWaiBandwidth() {
+		return waiBandwidth;
+	}
+
+
+	public void setWaiBandwidth(Long waiBandwidth) {
+		this.waiBandwidth = waiBandwidth;
+	}
+
+
+
+
+	
+}

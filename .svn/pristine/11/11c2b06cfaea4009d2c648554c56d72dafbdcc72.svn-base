@@ -1,0 +1,159 @@
+package com.newcloud.waf.storage.dao.util;
+
+import org.springframework.util.StringUtils;
+
+public class OverViewSqlUtil {
+	
+	/**
+	 * 概览首页map
+	 * @param begin
+	 * @param end
+	 * @param custId
+	 * @return
+	 */
+	public static String findRecentMapSql(long begin,long end,int custId){
+		StringBuffer sqlBuffer = new StringBuffer();
+		sqlBuffer.append("select wai_type,count(*) as count,wai_timestamp from ")
+				 .append(ShyyDataUtil.formatCustomerID(custId))
+				 .append(".waf_attack_ip")
+				 .append(" WHERE wai_timestamp between ")
+				 .append(begin)
+				 .append(" and ")
+				 .append(end)
+				 .append(" group by wai_type");
+		return sqlBuffer.toString();
+	}
+
+	/**
+	 * 查询top 5  ip
+	 * @param domainId
+	 * @param type
+	 * @param beginTime
+	 * @param endTime
+	 * @param custId
+	 * @return
+	 */
+	public static String findTopIpSql(Integer domainId, String type, Long beginTime, Long endTime, Integer custId) {
+		StringBuffer sqlBuffer = new StringBuffer();
+		sqlBuffer.append("select count(wai_nodeip) as count, wai_nodeip from ")
+			     .append(ShyyDataUtil.formatCustomerID(custId))
+			     .append(".waf_attack_ip")
+			     .append(" where wai_type = ")
+			     .append(type);
+		if(StringUtils.isEmpty(domainId)) {
+			sqlBuffer.append(" and wai_dniid = ")
+			         .append(domainId);
+		}
+		if(!StringUtils.isEmpty(beginTime) &&!StringUtils.isEmpty(endTime)) {
+			sqlBuffer.append(" and wai_timestamp between ")
+	                 .append(beginTime)
+	                 .append(" and ")
+	                 .append(endTime);
+		}
+		sqlBuffer.append(" group by wai_nodeip order by count desc limit 0,5");
+		return sqlBuffer.toString();
+	}
+
+	/**
+	 * 查询top5 区域
+	 * @param domainId
+	 * @param type
+	 * @param beginTime
+	 * @param endTime
+	 * @param custId
+	 * @return
+	 */
+	public static String findTopAreaSql(Integer domainId, String type, Long beginTime, Long endTime, Integer custId) {
+		StringBuffer sqlBuffer = new StringBuffer();
+		sqlBuffer.append("select count(wai_area) as count, wai_area from ")
+			     .append(ShyyDataUtil.formatCustomerID(custId))
+			     .append(".waf_attack_ip")
+			     .append(" where wai_type = ")
+			     .append(type);
+		if(StringUtils.isEmpty(domainId)) {
+			sqlBuffer.append(" and wai_dniid = ")
+			         .append(domainId);
+		}
+		if(!StringUtils.isEmpty(beginTime) &&!StringUtils.isEmpty(endTime)) {
+			sqlBuffer.append(" and wai_timestamp between ")
+	                 .append(beginTime)
+	                 .append(" and ")
+	                 .append(endTime);
+		}
+		sqlBuffer.append(" group by wai_area order by count desc limit 0,5");
+		return sqlBuffer.toString();
+	}
+	
+	/**
+	 * 查询最新20条 ip攻击记录
+	 * @param domainId
+	 * @param type
+	 * @param beginTime
+	 * @param endTime
+	 * @param custId
+	 * @return
+	 */
+	public static String findAttackIpSql(Integer domainId, String type, Long beginTime, Long endTime, Integer custId) {
+		StringBuffer sqlBuffer = new StringBuffer();
+		sqlBuffer.append("select * from ")
+			     .append(ShyyDataUtil.formatCustomerID(custId))
+			     .append(".waf_attack_ip")
+			     .append(" where wai_type = ")
+			     .append(type);
+		if(StringUtils.isEmpty(domainId)) {
+			sqlBuffer.append(" and wai_dniid = ")
+			         .append(domainId);
+		}
+		if(!StringUtils.isEmpty(beginTime) &&!StringUtils.isEmpty(endTime)) {
+			sqlBuffer.append(" and wai_timestamp between ")
+	                 .append(beginTime)
+	                 .append(" and ")
+	                 .append(endTime);
+		}
+		sqlBuffer.append("order by wai_timestamp desc limit 0,20");
+		return sqlBuffer.toString();
+	}
+
+	public static String findAttackUrlSql(Integer domainId, String type, Long beginTime, Long endTime, Integer custId) {
+		StringBuffer sqlBuffer = new StringBuffer();
+		sqlBuffer.append("select * from ")
+			     .append(ShyyDataUtil.formatCustomerID(custId))
+			     .append(".waf_attack_url")
+			     .append(" where wau_type = ")
+			     .append(type);
+		if(StringUtils.isEmpty(domainId)) {
+			sqlBuffer.append(" and wau_dniid = ")
+			         .append(domainId);
+		}
+		if(!StringUtils.isEmpty(beginTime) &&!StringUtils.isEmpty(endTime)) {
+			sqlBuffer.append(" and wau_timestamp between ")
+	                 .append(beginTime)
+	                 .append(" and ")
+	                 .append(endTime);
+		}
+		sqlBuffer.append("order by wau_timestamp desc limit 0,20");
+		return sqlBuffer.toString();
+	}
+
+	/**
+	 * 查询7天带宽sql
+	 * @param begin7Timestamp
+	 * @param endTimestamp
+	 * @param custId
+	 * @return
+	 */
+	public static String findBandWidthSql(long beginTime, long endTime, Integer custId) {
+		StringBuffer sqlBuffer = new StringBuffer();
+		sqlBuffer.append("select wau_timestamp,wau_bandwidth from ")
+			     .append(ShyyDataUtil.formatCustomerID(custId))
+			     .append(".waf_attack_url")
+			     .append(" where 1=1");
+		if(!StringUtils.isEmpty(beginTime) &&!StringUtils.isEmpty(endTime)) {
+			sqlBuffer.append(" and wau_timestamp between ")
+	                 .append(beginTime)
+	                 .append(" and ")
+	                 .append(endTime);
+		}
+		return sqlBuffer.toString();
+	}
+}

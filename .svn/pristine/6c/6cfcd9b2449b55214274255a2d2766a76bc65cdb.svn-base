@@ -1,0 +1,75 @@
+$(function(){
+	
+	
+});
+
+//查看赋值
+function view(){
+	$.getJSON("config/info", function(data) {
+		domainId: $("#domainSelect").val(data.domainId);
+		if(data.webStatus=='Y'){
+			
+		}else{
+			
+		}
+		/*webStatus : web,          
+		ccStatus : cc,              
+		ccRuleIds :  $("#ccRuleIds").val(data.ccRuleIds),               
+		exactStatus : exact,           
+		exactRuleIds : $("#exactRuleIds").val(data.exactRuleIds),                
+		ipStatus : ip,              
+		ipSegment : $("#ipSegment").val(), */          
+	});
+}
+
+
+//保存or更新
+function saveDomainConfig() {
+	var web;
+	var cc;
+	var exact;
+	var ip;
+	if ($("#webCheck").is(":checked")== true) {
+		web ="Y";
+	} else {
+		web ="N";
+	}
+	if ($("#ccCheck").is(":checked")== true) {
+		cc ="Y";
+	} else {
+		cc ="N";
+	} 
+	if ($("#exactCheck").is(":checked")== true) {
+		exact ="Y";
+	} else {
+		exact ="N";
+	} 
+	if ($("#ipCheck").is(":checked")== true) {
+		ip ="Y";
+	} else {
+		ip ="N";
+	} 
+	var postData ={
+		domainId: $("#domainSelect").val(),             
+		domainName: $("#domainSelect").find("option:selected").text(),  
+		webStatus : web,          
+		ccStatus : cc,              
+		ccRuleIds :  $("#ccRuleIds").val(),               
+		exactStatus : exact,           
+		exactRuleIds : $("#exactRuleIds").val(),                
+		ipStatus : ip,              
+		ipSegment : $("#ipSegment").val(),                 
+	};
+	$.post("config/up",postData, function(data) {
+		
+	});
+	
+	
+}
+
+function turnToCc(){
+	$("#ccRuleModal").modal("show");
+}
+function turnToConfig(){
+	$("#exactRuleModal").modal("show");
+}

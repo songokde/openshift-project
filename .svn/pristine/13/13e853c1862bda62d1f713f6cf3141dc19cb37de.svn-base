@@ -1,0 +1,29 @@
+$(function(){
+});
+
+/*function turnToCc(){
+	param ="www.ailiyundemo.com";
+	location.href="config/ccConfig?param1="+param;
+}*/
+
+
+/*function refreshDomain(opId) {
+	jQuery("#seldomain").empty();
+	jQuery("#undomain").empty();
+	$.post("",{opId : opId},function(data){
+		$.each(data,function(index,obj){
+			if(obj.flag){
+				jQuery("#seldomain").append("<option value='"+ obj.selId +"'>"+ obj.selName +"</option>");
+			}else{
+				jQuery("#undomain").append("<option value='"+ obj.selId +"'>"+ obj.selName +"</option>");
+			}
+		});
+	});
+}*/
+
+function turnToCc(){
+	$("#ccRuleModal").modal("show");
+}
+function turnToConfig(){
+	$("#exactRuleModal").modal("show");
+}

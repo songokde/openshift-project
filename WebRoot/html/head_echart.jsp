@@ -1,0 +1,1 @@
+<script src="plugin/echarts/echarts.common.min.js"></script>

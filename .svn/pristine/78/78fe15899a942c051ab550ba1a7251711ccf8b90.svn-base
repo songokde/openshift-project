@@ -1,0 +1,91 @@
+package com.newcloud.waf.storage.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import com.newcloud.waf.storage.entity.waf.WafAttackIp;
+import com.newcloud.waf.storage.entity.waf.WafAttackUrl;
+
+@Repository
+public interface IOverViewDAO {
+
+	/**
+	 * 获取最近一周的 天数据汇总
+	 * @param begin7Timestamp
+	 * @param endTimestamp
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, Map<String, Long>> findRecentMapByTime(Long begin7Timestamp, Long endTimestamp,Integer custId)  throws Exception;
+
+	/**
+	 * 查询topip
+	 * @param domainId
+	 * @param type
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, Object> findTopIpByType(Integer domainId, String type,Long beginTime,Long endTime,Integer custId) throws Exception;
+
+	/**
+	 * 查询top区域
+	 * @param domainId
+	 * @param type
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, Object> findTopAreaByType(Integer domainId, String type,Long beginTime,Long endTime,Integer custId) throws Exception;
+
+	/**
+	 * 查询ip攻击
+	 * @param domainId
+	 * @param type
+	 * @param beginTime
+	 * @param endTime
+	 * @param offset
+	 * @param limit
+	 * @return
+	 */
+	public List<WafAttackIp> findAttackList(Integer domainId, String type, Long beginTime, Long endTime,Integer custId) throws Exception;
+
+	/**
+	 * 查询url攻击
+	 * @param domainId
+	 * @param type
+	 * @param beginTime
+	 * @param endTime
+	 * @param offset
+	 * @param limit
+	 * @return
+	 */
+	public List<WafAttackUrl> findAttackUrlList(Integer domainId, String type, Long beginTime, Long endTime,Integer custId) throws Exception;
+
+	/**
+	 * 查询7日带宽
+	 * @param begin7Timestamp
+	 * @param endTimestamp
+	 * @param custId
+	 * @return
+	 */
+	public Map<String, Object> findBandWidthMap(long begin7Timestamp, long endTimestamp, Integer custId) throws Exception;
+
+	/**
+	 * 查询攻击ip详情
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	public WafAttackIp findAttackIpInfo(Integer id,Integer custId) throws Exception;
+
+	/**
+	 * 查询url详情
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	public WafAttackUrl findAttackUrlInfo(Integer id,Integer custId) throws Exception;
+
+	
+}

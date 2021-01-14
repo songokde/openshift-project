@@ -1,0 +1,265 @@
+/*$(function () {
+	$("#yesAttacks").html("");
+	$("#yesResAttacks").html("");
+	
+	$("#todAttacks").html("");
+	$("#todResAttacks").html("");
+	
+	$("#7Attacks").html("");
+	$("#7ResAttacks").html("");
+	
+	$("#pastAttacks").html("");
+	$("#pastResAttacks").html("");
+	
+	$.post("", function(data) {
+		$("#yesAttacks").html("");
+		$("#yesResAttacks").html("");
+		$("#todAttacks").html("");
+		$("#todResAttacks").html("");
+		$("#7Attacks").html("");
+		$("#7ResAttacks").html("");
+		$("#pastAttacks").html("");
+		$("#pastResAttacks").html("");
+	});
+});
+
+function searchDetail(factor){
+	var queryData = { 
+			time:factor,
+			infoDomain:$("#infoDomain").val(),
+		};
+	$.post("",queryData,function(data) {
+		
+		
+		showChart();
+		searchPieTab();
+	});
+}*/
+
+function showChart(){
+	var myChart3 = echarts.init(document.getElementById('safePieChart'));	
+	option = {
+			tooltip: {
+				trigger: 'axis',
+				axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+					type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+				}
+			},
+			xAxis: {
+				type: 'value',
+				show:false,
+			},
+			yAxis: {
+				type: 'category',
+				data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+				show:false,
+			},
+			series: [
+				{
+					name: '直接访问',
+					type: 'bar',
+					stack: '总量',
+					color:'green',
+					barWidth :'40%',
+					label: {
+						show: true,
+						position: 'right',
+						color:'black'
+					},
+					data: [320, 302, 301, 334, 390, 330, 320]
+				}
+			]
+	};
+	myChart3.setOption(option);
+}
+
+function showChartBandWidth(){
+	var myChart4 = echarts.init(document.getElementById('bandWidthChart'));
+	option = {
+	    color:["#00BFFF"],
+	    title: {
+	        text: "带宽/MByte",
+	        left: 'center',
+	        align: 'right',
+	    	textStyle:{
+	    		color:'#666',
+	    		fontSize:12,
+	    		fontWeight:800,
+		    }	
+	    },
+	    tooltip : {
+	        trigger: 'axis',
+	    },
+	    xAxis: {
+	        type: 'category',
+	        boundaryGap: false,
+	        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+	    },
+	    yAxis: {
+	        type: 'value'
+	    },
+	    series: [{
+	        data: [820, 932, 901, 934, 1290, 1330, 1320],
+	        type: 'line',
+	        areaStyle: {}
+	    }]
+	};
+    myChart4.setOption(option);
+}
+
+function searchPieTab(data){
+	console.log(data.data);
+	$("#attackDetailTab").bootstrapTable('destroy').bootstrapTable({
+	  	contentType: "application/x-www-form-urlencoded", 
+	  	data:data.data,
+        striped: true,  
+        pagination: false,  
+        singleSelect: false,  
+        clickToSelect:true,  
+        showColumns: false,  
+        search: false,   
+        silent: true,  
+        pageSize: 5,  
+        pageNumber:1, 
+        sidePagination: "client",  
+        pageList:[10, 25, 50, 100],  
+        columns: [{
+            field: "ip",
+            title: "攻击IP",
+            width : $(this).width() * 0.15
+        },  {
+            field: "area",
+            title: "所属地区",
+            width : $(this).width() * 0.15
+        },  {
+        	field: "time",
+        	title: "最后一次攻击时间",
+        	width : $(this).width() * 0.20
+        },  {
+        	field: "times",
+        	title: "攻击次数",
+        	width : $(this).width() * 0.15
+        },  {
+            field: "ratio",
+            title: "操作",
+            formatter : function() {
+            	return 	" <button type='button' class='btn' onclick ='showDetail()'\">查看攻击详情</button>";
+			}
+        }]
+    });
+}
+
+function showDetail(){
+	 var data ={
+			 "count": 10,
+			 "data":[
+			 	{
+			 		"attackTime":"2020-09-11 21:10:45",
+					"attackURL":"www.yimeiyu.com/yp/index.jsp",
+					"attackType":"SQL注入",
+					"attackRule":"sql代码执行插入",
+					"requestMethod": "POST",
+					"requestParam": "UESR=12333",
+					"action": "阻断"
+			 	},
+			 	{
+			 		"attackTime":"2020-11-11 12:45:43",
+					"attackURL":"www.yimeiyu.com/yp/index.jsp",
+					"attackType":"webshell",
+					"attackRule":"webshell行为",
+					"requestMethod": "POST",
+					"requestParam": "UESR=12333",
+					"action": "放行"
+			 	},
+			 	{
+			 		"attackTime":"2020-11-11 12:45:43",
+					"attackURL":"www.yimeiyu.com/yp/index.jsp",
+					"attackType":"webshell",
+					"attackRule":"webshell行为",
+					"requestMethod": "POST",
+					"requestParam": "UESR=12333",
+					"action": "放行"
+			 	},
+			 	{
+			 		"attackTime":"2020-11-11 12:45:43",
+					"attackURL":"www.yimeiyu.com/yp/index.jsp",
+					"attackType":"webshell",
+					"attackRule":"webshell行为",
+					"requestMethod": "POST",
+					"requestParam": "UESR=12333",
+					"action": "放行"
+			 	},
+			 	{
+			 		"attackTime":"2020-11-11 12:45:43",
+					"attackURL":"www.yimeiyu.com/yp/index.jsp",
+					"attackType":"webshell",
+					"attackRule":"webshell行为",
+					"requestMethod": "POST",
+					"requestParam": "UESR=12333",
+					"action": "放行"
+			 	},
+			 	{
+			 		"attackTime":"2020-11-11 12:45:43",
+					"attackURL":"www.yimeiyu.com/yp/index.jsp",
+					"attackType":"webshell",
+					"attackRule":"webshell行为",
+					"requestMethod": "POST",
+					"requestParam": "UESR=12333",
+					"action": "放行"
+			 	},
+			 	{
+			 		"attackTime":"2020-11-11 12:45:43",
+					"attackURL":"www.yimeiyu.com/yp/index.jsp",
+					"attackType":"webshell",
+					"attackRule":"webshell行为",
+					"requestMethod": "POST",
+					"requestParam": "UESR=12333",
+					"action": "放行"
+			 	}
+			 ]
+	 };
+	$("#attackDetailModal").modal("show");
+	$("#webDetailTab").bootstrapTable('destroy').bootstrapTable({
+	  	contentType: "application/x-www-form-urlencoded", 
+	  	data:data.data,
+        striped: true,  
+        pagination: false,  
+        singleSelect: false,  
+        clickToSelect:true,  
+        showColumns: false,  
+        search: false,   
+        silent: true,  
+        pageSize: 5,  
+        pageNumber:1, 
+        sidePagination: "client",  
+        pageList:[10, 25, 50, 100],  
+        columns: [{
+            field: "attackTime",
+            title: "攻击时间",
+            width : $(this).width() * 0.15
+        },  {
+            field: "attackURL",
+            title: "攻击URL",
+            width : $(this).width() * 0.15
+        },  {
+        	field: "attackType",
+        	title: "攻击类型（全部）",
+        	width : $(this).width() * 0.20
+        },  {
+        	field: "attackRule",
+        	title: "规则描述",
+        	width : $(this).width() * 0.15
+        },  {
+        	field: "requestMethod",
+        	title: "请求方式",
+        	width : $(this).width() * 0.15
+        },  {
+        	field: "requestParam",
+        	title: "请求参数",
+        	width : $(this).width() * 0.15
+        },  {
+            field: "action",
+            title: "规则动作",
+        }]
+    });
+}

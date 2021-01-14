@@ -1,0 +1,11 @@
+$(function(){
+});
+
+function turnToCc(){
+	param ="www.ailiyundemo.com";
+	location.href="config/ccConfig?param1="+param;
+}
+function turnToConfig(){
+	param ="www.ailiyundemo.com";
+	location.href="config/exactConfig?param1="+param;
+}

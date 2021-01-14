@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<something-else-entirely>
+
+	<!-- info表 -->
+	<proxool>
+		<alias>control</alias>
+		<driver-url>87B42E912508F0C4CBCD082A3459700B5A47DACB12747D81CEAFE0F54611D1976CB5D3C16FE064B39765646C3A19A55BAEDCB928BF93FAA131DD3B4E8E88B36D2BF3AD62838462312CA093AEB386F94FC2E1190F9D11FA8B4EEE8407AB51AB0C</driver-url>
+		<driver-class>com.mysql.jdbc.Driver</driver-class>
+		<driver-properties>
+			<property name="user" value="3412D6A762DDA202162E341DE4897EF2ABBFB74891C5443F31E5E67E5D9902AF" />
+			<property name="password" value="FDBB2C3ABC588E4FAFAA4D7DA49DAB6C2A7F3E60CA8DA33BD4B84447B58792BD" />
+		</driver-properties>
+		<minimum-connection-count>1</minimum-connection-count>
+		<maximum-connection-count>5</maximum-connection-count>
+		<test-before-use>true</test-before-use>
+		<house-keeping-test-sql>select now()</house-keeping-test-sql>
+	</proxool>
+	
+	<!-- waf表 -->
+	<proxool>
+		<alias>waf</alias>
+		<driver-url>E3F1EBA55DC05DDD4DA7FEF547D4F26DEE6605C9A699B58DE96E8FF2122F1E504011064C8CB33432034B52FAF01ADDFF55A4AA796A6FE5535DEEAFD15946536904DAECBB24A828D7D0ED30510D781011C5083D2AB90965465710167297FDE76F</driver-url>
+		<driver-class>com.mysql.jdbc.Driver</driver-class>
+		<driver-properties>
+			<property name="user" value="D561D202330AD7BC81196DE2F4B761661A897BE1297D12A793047977D0169BB1" />
+			<property name="password" value="534D11134558341ED785C08054C73BF57A3A41C61D2BA4CCBC1A0E305F56E061" />
+		</driver-properties>
+		<minimum-connection-count>1</minimum-connection-count>
+		<maximum-connection-count>5</maximum-connection-count>
+		<test-before-use>true</test-before-use>
+		<house-keeping-test-sql>select now()</house-keeping-test-sql>
+	</proxool>
+</something-else-entirely>

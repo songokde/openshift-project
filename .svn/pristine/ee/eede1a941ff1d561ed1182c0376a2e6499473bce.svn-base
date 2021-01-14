@@ -1,0 +1,115 @@
+package com.newcloud.waf.web.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONObject;
+import com.newcloud.waf.cache.HttpSessionCache;
+import com.newcloud.waf.service.IUserService;
+import com.newcloud.waf.storage.entity.InfoCustomer;
+import com.newcloud.waf.storage.entity.InfoOperator;
+import com.newcloud.waf.util.ShyyRequestUtil;
+
+/**
+ * 登录
+ * 
+ * @author Administrator
+ *
+ */
+@Controller
+public class WebLoginController extends BaseController {
+	
+	@Resource
+	private IUserService userService;
+	
+	/**
+	 * 单点登录
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/waf")
+	public String checkUserLogin(HttpServletRequest request, HttpServletResponse response) {
+		String hostname = request.getScheme()+"://"+request.getServerName();  
+		String token = request.getParameter("token");
+		String allSessionId = request.getParameter("allSessionId");
+		try {
+			if(token!=null){
+		        //验证登录
+				Map<String,String> param = new HashMap<>();
+				param.put("token", token);
+				param.put("allSessionId", allSessionId);
+				param.put("clientUrl","http://127.0.0.1/newcloud");
+				String[] result = ShyyRequestUtil.commPost("http://127.0.0.1/tokenCheck",param);
+				if(result[0].equals("200")) {
+					JSONObject j = JSONObject.parseObject(result[1]);
+					int errorCode = j.getIntValue("code");
+					if(errorCode == 1){
+						HttpSession session = request.getSession();
+						if(!HttpSessionCache.getLocalSession(session.getId())) {
+							//查询数据
+							String userName = j.getString("userName");
+							InfoOperator user = userService.findUserByName(userName);
+							if(user!=null) {
+								InfoCustomer customer = baseService.findInfo(InfoCustomer.class, user.getOpCustId());
+								//存放SESSION
+								session.setAttribute("SESSION_USER", user);
+								session.setAttribute("SESSION_CUSTOMER", customer);
+								//存储对应关系
+								HttpSessionCache.setLocalSession(session.getId(), session);
+								HttpSessionCache.setLink(allSessionId, session.getId());
+								//返回
+								return "redirect:main";
+							}else {
+								return "redirect:"+hostname+"/main";
+							}
+						}
+					}
+				}
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "redirect:"+hostname+"/login?server="+hostname+"/newcloud/waf";
+	}
+	
+	/**
+	 * 主动退出
+	 * 
+	 */
+	@RequestMapping("/exit")
+	public String exit() {
+		HttpSession session = getNowSession();
+		session.invalidate();
+		return "redirect:index.jsp";
+	}
+	
+	/**
+	 * 主服务器退出
+	 * 
+	 * @param sessionId
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/logout")
+	public String logout(String sessionId) {
+		String localId = HttpSessionCache.removeLink(sessionId);
+		if(localId!=null) {
+			HttpSession session = HttpSessionCache.removeSession(localId);
+			if(session!=null) {
+				session.invalidate();
+			}
+		}
+		return "OK";
+	}
+}

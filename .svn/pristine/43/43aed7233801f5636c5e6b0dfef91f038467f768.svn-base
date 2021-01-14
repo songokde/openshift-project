@@ -1,0 +1,129 @@
+package com.newcloud.waf.storage.entity.waf;
+
+import com.newcloud.waf.storage.entity.BaseEntity;
+
+/**
+ * cc防护规则表
+ * @author song
+ *
+ */
+public class WafCcInfo extends BaseEntity{
+	private static final long serialVersionUID = 2253130519348764636L;
+	
+	private Integer wciId;            //id
+	 
+	private Integer wciCusid;         //客户id
+	
+	private String  wciRulename;      //规则名称
+	 
+	private String wciUrl;            //url
+	
+	private String wciRuleinfo;       //匹配规则  0完全匹配 1前缀匹配
+	
+	private Integer wciDuration;      //检测时长 秒
+	
+	private Integer wciIpcount;       //单一ip访问次数
+	
+	private String wciMovement;       //阻断动作 0封禁 1 人机识别
+	
+	private Integer wciTime;         //封禁多少分钟 
+
+	
+	public WafCcInfo() {
+		super();
+	}
+
+
+	public Integer getWciId() {
+		return wciId;
+	}
+
+
+	public void setWciId(Integer wciId) {
+		this.wciId = wciId;
+	}
+
+
+	public Integer getWciCusid() {
+		return wciCusid;
+	}
+
+
+	public void setWciCusid(Integer wciCusid) {
+		this.wciCusid = wciCusid;
+	}
+
+
+	public String getWciRulename() {
+		return wciRulename;
+	}
+
+
+	public void setWciRulename(String wciRulename) {
+		this.wciRulename = wciRulename;
+	}
+
+
+	public String getWciUrl() {
+		return wciUrl;
+	}
+
+
+	public void setWciUrl(String wciUrl) {
+		this.wciUrl = wciUrl;
+	}
+
+
+	public String getWciRuleinfo() {
+		return wciRuleinfo;
+	}
+
+
+	public void setWciRuleinfo(String wciRuleinfo) {
+		this.wciRuleinfo = wciRuleinfo;
+	}
+
+
+	public Integer getWciDuration() {
+		return wciDuration;
+	}
+
+
+	public void setWciDuration(Integer wciDuration) {
+		this.wciDuration = wciDuration;
+	}
+
+
+	public Integer getWciIpcount() {
+		return wciIpcount;
+	}
+
+
+	public void setWciIpcount(Integer wciIpcount) {
+		this.wciIpcount = wciIpcount;
+	}
+
+
+	public String getWciMovement() {
+		return wciMovement;
+	}
+
+
+	public void setWciMovement(String wciMovement) {
+		this.wciMovement = wciMovement;
+	}
+
+
+	public Integer getWciTime() {
+		return wciTime;
+	}
+
+
+	public void setWciTime(Integer wciTime) {
+		this.wciTime = wciTime;
+	}
+
+
+
+	
+}

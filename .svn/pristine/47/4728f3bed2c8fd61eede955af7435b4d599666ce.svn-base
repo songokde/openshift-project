@@ -1,0 +1,67 @@
+package com.newcloud.waf.service.impl;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.newcloud.waf.service.IOverViewService;
+import com.newcloud.waf.storage.dao.IOverViewDAO;
+
+@Service
+public class OverViewService extends BaseService implements IOverViewService {
+	@Resource
+	protected IOverViewDAO overViewDAO;
+	
+	@Override
+	public Map<String,Integer>  findRequsetCountByTime(Long beginTimestamp, Long endTimestamp) throws Exception {
+		String sql="select count(*),waiType from WafAttackIp where  waiTimeStamp between :start and :end   group by waiType";
+		String sql1="select count(*),wauType from WafAttackUrl where  wauTimeStamp between :start and :end   group by wauType";
+		Map<String,Object> param = new HashMap<String, Object>();
+		param.put("start", beginTimestamp);
+		param.put("end", endTimestamp);
+		Map<String,Integer> map= baseDAO.findHQLGroupCountString(sql, param);
+		Map<String,Integer> map1= baseDAO.findHQLGroupCountString(sql1, param);
+		for(Entry<String, Integer> entry:map1.entrySet()) {
+			String key = entry.getKey();
+			if(map.containsKey(key)) {
+				Integer count =map.get(key)+entry.getValue();
+				map.replace(key, count);
+			}else {
+				map.put(key, entry.getValue());
+			}
+		}
+		return map;
+	}
+
+	@Override
+	public Map<String, Map<String, Integer>> findRecentMapByTime(Long begin7Timestamp, Long endTimestamp) throws Exception {
+			return overViewDAO.findRecentMapByTime(begin7Timestamp, endTimestamp);
+	}
+
+	@Override
+	public Integer findCountByType(Integer domainId, String type, long beginTimestamp, long endTimestamp)
+			throws Exception {
+		return null;
+	}
+
+	@Override
+	public Integer findIpCountByType(Integer domainId, String type, long beginTimestamp, long endTimestamp)
+			throws Exception {
+		return null;
+	}
+
+	@Override
+	public Map<String, Object> findTopIpByType(Integer domainId, String type) throws Exception {
+		return overViewDAO.findTopIpByType(domainId,type);
+	}
+
+	@Override
+	public Map<String, Object> findTopAreaByType(Integer domainId, String type) throws Exception {
+		return overViewDAO.findTopAreaByType(domainId,type);
+	}
+
+}

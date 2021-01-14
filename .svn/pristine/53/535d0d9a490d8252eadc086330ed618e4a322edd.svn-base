@@ -1,0 +1,79 @@
+package com.newcloud.waf.storage.entity.waf;
+
+import com.newcloud.waf.storage.entity.BaseEntity;
+
+/**
+ * cc防护规则表
+ * @author song
+ *
+ */
+public class WafExactInfo extends BaseEntity{
+	private static final long serialVersionUID = 2253130519348764636L;
+	
+	private Integer weiId;            //id
+	 
+	private Integer weiCusid;         //客户id
+	
+	private String  weiRulename;      //规则名称
+	 
+	private String  weiMovement;       //匹配之后的动作  0 放行/ 1阻断
+	
+	private String  weiRuleinfo;       //规则详情
+	
+	
+	public WafExactInfo() {
+		super();
+	}
+
+
+	public Integer getWeiId() {
+		return weiId;
+	}
+
+
+	public void setWeiId(Integer weiId) {
+		this.weiId = weiId;
+	}
+
+
+	public Integer getWeiCusid() {
+		return weiCusid;
+	}
+
+
+	public void setWeiCusid(Integer weiCusid) {
+		this.weiCusid = weiCusid;
+	}
+
+
+	public String getWeiRulename() {
+		return weiRulename;
+	}
+
+
+	public void setWeiRulename(String weiRulename) {
+		this.weiRulename = weiRulename;
+	}
+
+
+	public String getWeiMovement() {
+		return weiMovement;
+	}
+
+
+	public void setWeiMovement(String weiMovement) {
+		this.weiMovement = weiMovement;
+	}
+
+
+	public String getWeiRuleinfo() {
+		return weiRuleinfo;
+	}
+
+
+	public void setWeiRuleinfo(String weiRuleinfo) {
+		this.weiRuleinfo = weiRuleinfo;
+	}
+
+	
+}

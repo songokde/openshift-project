@@ -1,0 +1,215 @@
+package com.newcloud.waf.web.controller.overview;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.newcloud.waf.service.IOverViewService;
+import com.newcloud.waf.storage.entity.BaseEntity;
+import com.newcloud.waf.storage.entity.waf.WafAttackIp;
+import com.newcloud.waf.storage.entity.waf.WafAttackUrl;
+import com.newcloud.waf.util.ShyyDateUtil;
+import com.newcloud.waf.web.controller.BaseController;
+
+/**
+ * 主页-主页展示
+ * @author song
+ *
+ */
+@Controller
+@RequestMapping("/over")
+public class OverViewController extends BaseController{
+
+	@Resource
+	private IOverViewService overViewService;
+	
+//------------------------------------------------------------主页方法---------------------------------------------------
+    @RequestMapping("/allMap")
+    @ResponseBody
+	public Map<String,Map<String,Object>> getViewMap(){
+    	Integer custId = getNowCompany().getCusId();
+    	Map<String,Map<String,Object>> resultMap = new HashMap<>();
+    	try {
+			long endTimestamp = System.currentTimeMillis() / 1000;
+			long beginTimestamp =ShyyDateUtil.getZeroDate(new Date().getTime());
+			//昨天时间  0点
+			long begin1Timestamp =ShyyDateUtil.getZeroDate((ShyyDateUtil.getPastDate(1))*1000l);
+			long begin7Timestamp = ShyyDateUtil.getZeroDate((ShyyDateUtil.getPastDate(7))*1000l);
+			//过去30天时间 0点
+			long begin30Timestamp = ShyyDateUtil.getZeroDate((ShyyDateUtil.getPastDate(30))*1000l);
+			//今天  今天0点到当前时间
+			Map<String,Long> todayMap = overViewService.findRequsetCountByTime(beginTimestamp,endTimestamp,custId);
+			//昨天 昨天0点到今天0点
+			Map<String,Long> yesterdayMap = overViewService.findRequsetCountByTime(begin1Timestamp,beginTimestamp,custId);
+			//过去30天
+			Map<String,Long> futureMap = overViewService.findRequsetCountByTime(begin30Timestamp,beginTimestamp,custId);
+			
+			Map<String,Object> webTitle = new HashMap<String, Object>();
+			webTitle.put("yesterday", yesterdayMap.get("web"));
+			webTitle.put("today", todayMap.get("web"));
+			webTitle.put("future", futureMap.get("web"));
+			resultMap.put("web", webTitle);
+			Map<String,Object> ccTitle = new HashMap<String, Object>();
+			ccTitle.put("yesterday", yesterdayMap.get("cc"));
+			ccTitle.put("today", todayMap.get("cc"));
+			ccTitle.put("future", futureMap.get("cc"));
+			resultMap.put("cc", ccTitle);
+			Map<String,Object> visitTitle = new HashMap<String, Object>();
+			visitTitle.put("yesterday", yesterdayMap.get("visit"));
+			visitTitle.put("today", todayMap.get("visit"));
+			visitTitle.put("future", futureMap.get("visit"));
+			resultMap.put("visit", visitTitle);
+			
+			//7天数据 按天统计  map<类型,map<时间,请求>>
+			Map<String,Map<String,Long>> recentMap = overViewService.findRecentMapByTime(begin7Timestamp,endTimestamp,custId);
+			for(Entry<String, Map<String, Long>> entry:recentMap.entrySet()) {
+				Map<String,Object> map = new HashMap<String, Object>();
+				map.put("time", entry.getValue().keySet());
+				map.put("value", entry.getValue().values());
+				resultMap.put(entry.getKey()+"Char", map);
+			}
+			
+			//带宽图 
+			Map<String,Object> bandWidthMap = overViewService.findBandWidthMap(begin7Timestamp,endTimestamp,custId);
+			resultMap.put("bandwidth", bandWidthMap);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	return resultMap;
+	}
+    
+    
+    @RequestMapping("/list")
+    @ResponseBody
+	public List<BaseEntity> getTopList(){
+    	
+    	return null;
+    }
+	
+    
+//----------------------------------------------------------------------报表中方法--------------------------------------------------------------
+    @RequestMapping("/reportMap")
+    @ResponseBody
+	public Map<String,Map<String,Object>> getReportMap(Integer domainId,String type,Long beginTime,Long endTime){
+    	Integer custId = getNowCompany().getCusId();
+    	Map<String,Map<String,Object>> resultMap =  new HashMap<>();
+    	try {
+			long endTimestamp = System.currentTimeMillis() / 1000;
+			long beginTimestamp =ShyyDateUtil.getZeroDate(new Date().getTime());
+			//昨天时间  0点
+			long begin1Timestamp =ShyyDateUtil.getZeroDate((ShyyDateUtil.getPastDate(1))*1000l);
+			long begin7Timestamp = ShyyDateUtil.getZeroDate((ShyyDateUtil.getPastDate(7))*1000l);
+			//过去30天时间 0点
+			long begin30Timestamp = ShyyDateUtil.getZeroDate((ShyyDateUtil.getPastDate(30))*1000l);
+			
+			//今天
+			Integer count = overViewService.findCountByType(domainId,type,beginTimestamp,endTimestamp,custId);
+			Integer ipCount = overViewService.findIpCountByType(domainId,type,beginTimestamp,endTimestamp,custId);
+			Map<String,Object> map = new HashMap<>();
+			map.put("count", count);
+			map.put("ipCount", ipCount);
+			resultMap.put("today", map);
+			//昨天
+			Integer yCount = overViewService.findCountByType(domainId,type,begin1Timestamp,beginTimestamp,custId);
+			Integer yIpCount = overViewService.findIpCountByType(domainId,type,begin1Timestamp,beginTimestamp,custId);
+			Map<String,Object> map1 = new HashMap<>();
+			map1.put("count", yCount);
+			map1.put("ipCount", yIpCount);
+			resultMap.put("yesterday", map1);
+			//7天
+			Integer sCount = overViewService.findCountByType(domainId,type,begin7Timestamp,beginTimestamp,custId);
+			Integer sIpCount = overViewService.findIpCountByType(domainId,type,begin7Timestamp,beginTimestamp,custId);
+			Map<String,Object> map2 = new HashMap<>();
+			map2.put("count", sCount);
+			map2.put("ipCount", sIpCount);
+			resultMap.put("7day", map2);
+			//30天
+			Integer tCount = overViewService.findCountByType(domainId,type,begin30Timestamp,beginTimestamp,custId);
+			Integer tIpCount = overViewService.findIpCountByType(domainId,type,begin30Timestamp,beginTimestamp,custId);
+			Map<String,Object> map3 = new HashMap<>();
+			map3.put("count", tCount);
+			map3.put("ipCount", tIpCount);
+			resultMap.put("30day", map3);
+			
+			//封装排行数据
+			Map<String,Object> map4 = overViewService.findTopIpByType(domainId,type,beginTime,endTime,custId);
+			Map<String,Object> map5 = overViewService.findTopAreaByType(domainId,type,beginTime,endTime,custId);
+			resultMap.put("ip", map4);
+			resultMap.put("area", map5);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	return resultMap;
+	}
+    
+    
+    /**
+     * 报表 iptable 最新20条
+     */
+	@ResponseBody
+	@RequestMapping("ipList")
+	public List<WafAttackIp> AttackIpList(Integer domainId,String type,Long beginTime,Long endTime){
+		Integer custId = getNowCompany().getCusId();
+		try{
+			return overViewService.findAttackList(domainId,type,beginTime,endTime,custId);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ArrayList<>();
+	}
+    
+	/**
+     * 报表 iptable 最新20条
+     */
+	@ResponseBody
+	@RequestMapping("urlList")
+	public List<WafAttackUrl> AttackUrlList(Integer domainId,String type,Long beginTime,Long endTime){
+		Integer custId = getNowCompany().getCusId();
+		try{
+			return overViewService.findAttackUrlList(domainId,type,beginTime,endTime,custId);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ArrayList<>();
+	}
+	
+	/**
+	 * ipinfo
+	 */
+	@ResponseBody
+	@RequestMapping("ipInfo")
+	public WafAttackIp findAttackIpInfo(Integer id){
+		Integer custId = getNowCompany().getCusId();
+		try{
+			return overViewService.findAttackIpInfo(id,custId);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * urlinfo
+	 */
+	@ResponseBody
+	@RequestMapping("urlInfo")
+	public WafAttackUrl findAttackUrlInfo(Integer id){
+		Integer custId = getNowCompany().getCusId();
+		try{
+			return overViewService.findAttackUrlInfo(id,custId);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+}

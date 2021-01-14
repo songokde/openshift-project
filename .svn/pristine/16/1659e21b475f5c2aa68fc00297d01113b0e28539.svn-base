@@ -1,0 +1,23 @@
+package com.newcloud.waf.cache;
+
+import javax.servlet.annotation.WebListener;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
+
+@WebListener
+public class ClientHttpSessionListener implements HttpSessionListener {
+
+	@Override
+	public void sessionCreated(HttpSessionEvent arg0) {
+		HttpSessionCache.putOnlieMap(arg0.getSession());
+		System.out.println("CREATE SESSION = "+arg0.getSession().getId());
+		System.out.println(HttpSessionCache.getOnlieSize());
+	}
+
+	@Override
+	public void sessionDestroyed(HttpSessionEvent arg0) {
+		HttpSessionCache.removeSession(arg0.getSession().getId());
+		HttpSessionCache.removeLocalLink(arg0.getSession().getId());
+	}
+
+}

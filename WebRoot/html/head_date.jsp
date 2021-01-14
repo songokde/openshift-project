@@ -1,0 +1,5 @@
+<script src="plugin/layer/laydate/laydate.js"></script>
+<script src="js/timeFormat.js"></script>
+<link href="plugin/bootStrapDate/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<script src="plugin/bootStrapDate/js/bootstrap-datetimepicker.js"></script>
+<script src="plugin/bootStrapDate/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>

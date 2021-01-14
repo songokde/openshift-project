@@ -1,0 +1,88 @@
+package com.newcloud.waf.service.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.newcloud.waf.service.IOverViewService;
+import com.newcloud.waf.storage.dao.IOverViewDAO;
+import com.newcloud.waf.storage.entity.waf.WafAttackIp;
+
+@Service
+public class OverViewService extends BaseService implements IOverViewService {
+	@Resource
+	protected IOverViewDAO overViewDAO;
+	
+	@Override
+	public Map<String,Long>  findRequsetCountByTime(Long beginTimestamp, Long endTimestamp,Integer custId) throws Exception {
+		Map<String,Long> resultMap = new HashMap<>();
+		Map<String, Map<String, Long>> map = overViewDAO.findRecentMapByTime(beginTimestamp,endTimestamp,custId);
+		for(Entry<String, Map<String, Long>> entry:map.entrySet()) {
+			Long count =0l;
+			Map<String, Long> childMap = entry.getValue();
+			for( Entry<String, Long> child:childMap.entrySet()) {
+				count+=child.getValue();
+			}
+			resultMap.put(entry.getKey(), count);
+		}
+		return resultMap;
+	}
+
+	@Override
+	public Map<String, Map<String, Long>> findRecentMapByTime(Long begin7Timestamp, Long endTimestamp,Integer custId) throws Exception {
+		return overViewDAO.findRecentMapByTime(begin7Timestamp, endTimestamp,custId);
+	}
+
+	@Override
+	public Map<String,Integer> findCountByType(Integer domainId, String type,Integer beginTimestamp, Integer endTimestamp,Integer custId)
+			throws Exception {
+		return overViewDAO.findCountByType(domainId,type,beginTimestamp,endTimestamp,custId);
+	}
+
+	@Override
+	public Integer findUrlCountByType(Integer domainId, String type, Integer beginTimestamp, Integer endTimestamp,Integer custId)
+			throws Exception {
+		return overViewDAO.findUrlCountByType(domainId,type,beginTimestamp,endTimestamp,custId);
+	}
+
+	@Override
+	public List<WafAttackIp> findAttackList(Integer domainId, String type, Integer beginTime, Integer endTime,Integer custId) throws Exception {
+		return overViewDAO.findAttackList(domainId,type,beginTime,endTime,custId);
+	}
+	
+	@Override
+	public Map<Integer, Long> findCodeMap(Integer beginTimestamp, Integer endTimestamp,String type,Integer domainId,Integer custId) throws Exception {
+		return overViewDAO.findCodeMap(beginTimestamp,endTimestamp,type,domainId,custId);
+	}
+
+	@Override
+	public Map<String, Long> findAreaMap(Integer beginTimestamp, Integer endTimestamp,String type,Integer domainId,Integer custId) throws Exception {
+		return overViewDAO.findAreaMap(beginTimestamp,endTimestamp,type,domainId,custId);
+	}
+	
+	@Override
+	public Map<String, Object> findBandWidthMap(Integer beginTime, Integer endTime,Integer custId,String type,Integer domainId) throws Exception {
+		return overViewDAO.findBandWidthMap(beginTime,endTime,custId,type,domainId);
+	}
+
+	@Override
+	public Map<String, Map<String, Long>> findCompareBandwidthMap(Integer beginTime, Integer endTime, String type,
+			Integer domainId, Integer custId)  throws Exception{
+		 Map<String, Object> attackMap = overViewDAO.findBandWidthMap(beginTime,endTime,custId,type,domainId);
+		 return null;
+	}
+
+	@Override
+	public WafAttackIp findAttackIpInfo(Integer id,Integer custId) throws Exception {
+		return overViewDAO.findAttackIpInfo(id,custId);
+	}
+
+
+	
+
+}

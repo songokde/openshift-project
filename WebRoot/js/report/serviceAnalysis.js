@@ -1,0 +1,256 @@
+/*$(function(){
+	$("#yesVisitTimes").html("");
+	$("#todVisitTimes").html("");
+	$("#lastVisitTimes").html("");
+	
+	$("#yesIpTimes").html("");
+	$("#todIpTimes").html("");
+	$("#lastIpTimes").html("");
+});
+
+function searchDetail(factor){
+	var queryData = { 
+			time:factor,
+			infoDomain:$("#infoDomain").val(),
+		};
+	$.post("",queryData,function(data) {
+		$("#yesVisitTimes").html("");
+		$("#todVisitTimes").html("");
+		$("#lastVisitTimes").html("");
+		
+		$("#yesIpTimes").html("");
+		$("#todIpTimes").html("");
+		$("#lastIpTimes").html("");
+		showChart();
+	});
+}*/
+
+function showChart(){
+	var myChart = echarts.init(document.getElementById('numberLineChart'));
+	// 指定图表的配置项和数据
+	option = {
+			 xAxis: {
+			        type: 'category',
+			        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+			        show:false
+			    },
+			    yAxis: {
+			        type: 'value',
+			        show:false
+			    },
+			    series: [{
+			        data: [820, 932, 901, 934, 1290, 1330, 1320],
+			        type: 'line'
+			    }]
+		};
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+    var myChart2= echarts.init(document.getElementById('ipLineChart'));
+    option = {
+    		xAxis: {
+    			type: 'category',
+    			data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    			show:false
+    		},
+    		yAxis: {
+    			type: 'value',
+    			show:false
+    		},
+    		series: [{
+    			data: [820, 932, 901, 934, 1290, 1330, 1320],
+    			type: 'line',
+    			color:'blue'
+    		}]
+    };
+    myChart2.setOption(option);
+    
+    var myChart3 = echarts.init(document.getElementById('responseTimeChart'));	
+	option = {
+			tooltip: {
+				trigger: 'axis',
+				axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+					type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+				}
+			},
+			xAxis: {
+				type: 'value',
+				show:false,
+			},
+			yAxis: {
+				type: 'category',
+				data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+				show:false,
+			},
+			series: [
+				{
+					name: '直接访问',
+					type: 'bar',
+					stack: '总量',
+					color:'green',
+					barWidth :'40%',
+					label: {
+						show: true,
+						position: 'right',
+						color:'black'
+					},
+					data: [320, 302, 301, 334, 390, 330, 320]
+				}
+				]
+	};
+	myChart3.setOption(option);
+	
+	var myChart4 = echarts.init(document.getElementById('responseIpChart'));	
+	option = {
+			tooltip: {
+				trigger: 'axis',
+				axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+					type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+				}
+			},
+			xAxis: {
+				type: 'value',
+				show:false,
+			},
+			yAxis: {
+				type: 'category',
+				data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+				show:false,
+			},
+			series: [
+				{
+					name: '直接访问',
+					type: 'bar',
+					stack: '总量',
+					color:'green',
+					barWidth :'40%',
+					label: {
+						show: true,
+						position: 'right',
+						color:'black'
+					},
+					data: [320, 302, 301, 334, 390, 330, 320]
+				}
+				]
+	};
+	myChart4.setOption(option);
+	
+	var myChart5 = echarts.init(document.getElementById('requestResourceChart'));	
+	option = {
+			tooltip: {
+				trigger: 'axis',
+				axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+					type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+				}
+			},
+			xAxis: {
+				type: 'value',
+				show:false,
+			},
+			yAxis: {
+				type: 'category',
+				data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+				show:false,
+			},
+			series: [
+				{
+					name: '直接访问',
+					type: 'bar',
+					stack: '总量',
+					color:'green',
+					barWidth :'40%',
+					label: {
+						show: true,
+						position: 'right',
+						color:'black'
+					},
+					data: [320, 302, 301, 334, 390, 330, 320]
+				}
+				]
+	};
+	myChart5.setOption(option);
+	
+	var myChart6 = echarts.init(document.getElementById('responseStateChart'));
+	option = {
+		    tooltip: {
+		        trigger: 'item',
+		        formatter: '{a} <br/>{b}: {c} ({d}%)'
+		    },
+		    legend: {
+		        orient: 'horizontal',
+		        fontSize: '10',
+		        top:'300',
+		        data: ['404', '200', 'other']
+		    },
+		    series: [
+		        {
+		            name: '响应状态',
+		            type: 'pie',
+		            radius: ['50%', '70%'],
+		            avoidLabelOverlap: false,
+		            label: {
+		                show: false,
+		                position: 'center'
+		            },
+		            emphasis: {
+		                label: {
+		                    show: true,
+		                    fontSize: '15',
+		                    fontWeight: 'bold'
+		                }
+		            },
+		            labelLine: {
+		                show: false
+		            },
+		            data: [
+		                {value: 335, name: '404'},
+		                {value: 310, name: '200'},
+		                {value: 234, name: 'other'},
+		            ]
+		        }
+		    ]
+		};
+	myChart6.setOption(option);
+	
+	var myChart7 = echarts.init(document.getElementById('BrowserChart'));
+	option = {
+		    tooltip: {
+		        trigger: 'item',
+		        formatter: '{a} <br/>{b}: {c} ({d}%)'
+		    },
+		    legend: {
+		        orient: 'horizontal',
+		        fontSize: '10',
+		        top:'300',
+		        data: ['IE', 'Chrome', 'Firefox','other']
+		    },
+		    series: [
+		        {
+		            name: 'Browser分布',
+		            type: 'pie',
+		            radius: ['50%', '70%'],
+		            avoidLabelOverlap: false,
+		            label: {
+		                show: false,
+		                position: 'center'
+		            },
+		            emphasis: {
+		                label: {
+		                    show: true,
+		                    fontSize: '15',
+		                    fontWeight: 'bold'
+		                }
+		            },
+		            labelLine: {
+		                show: false
+		            },
+		            data: [
+		                {value: 335, name: 'IE'},
+		                {value: 310, name: 'Chrome'},
+		                {value: 234, name: 'Firefox'},
+		                {value: 135, name: 'other'},
+		            ]
+		        }
+		    ]
+		};
+	myChart7.setOption(option);
+}

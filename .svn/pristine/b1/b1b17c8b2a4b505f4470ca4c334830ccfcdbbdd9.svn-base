@@ -1,0 +1,63 @@
+package com.newcloud.waf.job;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
+
+import com.newcloud.waf.service.IBaseService;
+import com.newcloud.waf.storage.entity.waf.WafCcInfo;
+import com.newcloud.waf.storage.entity.waf.WafDomainInfo;
+import com.newcloud.waf.storage.entity.waf.WafExactInfo;
+import com.newcloud.waf.util.ShyyConstant;
+
+@Component("reloadJob")
+public class RedisReloadJob{
+	private static Logger log = Logger.getLogger("LOGFILE");
+	
+	@Resource
+	private IBaseService baseService;
+	
+	@Resource
+	private RedisTemplate<String, ?> redisTemplate  ;
+	
+	/**
+	 * 主任务
+	 */
+	public void reloadRedis(){
+		log.info("--------------------begin--------------------");
+		try {
+			Map<String,Integer> map = new HashMap<String, Integer>();
+			Map<String,WafDomainInfo> domainVoMap = new HashMap<String, WafDomainInfo>();
+			Map<Integer,WafCcInfo> ccMap = new HashMap<Integer, WafCcInfo>();
+			Map<Integer,WafExactInfo> visitMap = new HashMap<Integer, WafExactInfo>();
+			List<WafDomainInfo> list = baseService.findHQL("from WafDomainInfo");
+			for(WafDomainInfo info :list) {
+				map.put(info.getWdiDname(), info.getWdiDniId());
+				domainVoMap.put(info.getWdiDname(), info);
+			}
+			
+			List<WafCcInfo> ccList = baseService.findHQL("from WafCcInfo");
+			for(WafCcInfo info :ccList) {
+				ccMap.put(info.getWciId(), info);
+			}
+			
+			List<WafExactInfo> visitList = baseService.findHQL("from WafExactInfo");
+			for(WafExactInfo info :visitList) {
+				visitMap.put(info.getWeiId(), info);
+			}
+			redisTemplate.opsForHash().putAll(ShyyConstant.REDIS_KEY_DOMAIN, map);
+			redisTemplate.opsForHash().putAll(ShyyConstant.REDIS_KEY_DOMAINVO, domainVoMap);
+			redisTemplate.opsForHash().putAll(ShyyConstant.REDIS_KEY_CCRULEVO, ccMap);
+			redisTemplate.opsForHash().putAll(ShyyConstant.REDIS_KEY_VISITRULEVO, visitMap);
+			log.info("--------------------end--------------------");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}

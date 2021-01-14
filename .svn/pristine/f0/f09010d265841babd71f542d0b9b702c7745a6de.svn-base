@@ -1,0 +1,15 @@
+package com.newcloud.waf.web.controller.config;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+/**
+ * 域名-域名配置
+ * @author song
+ *
+ */
+@Controller
+@RequestMapping("/config")
+public class DomainConfigController {
+
+}

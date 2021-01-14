@@ -1,0 +1,159 @@
+package com.newcloud.waf.util;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+
+public class ShyyConstant {
+	
+	public static  Map<Integer,String> typeMap =new HashMap<>();
+	static {
+		typeMap.put(0, "web");
+		typeMap.put(1, "cc");
+		typeMap.put(2, "visit");
+	}
+	
+	public static  Map<Integer,String> methodMap =new HashMap<>();
+	static {
+		methodMap.put(0, "web");
+		methodMap.put(1, "cc");
+		methodMap.put(2, "visit");
+	}
+	
+	public static  Map<Integer,String> requestTypeMap =new HashMap<>();
+	static {
+		requestTypeMap.put(0, "post");
+		requestTypeMap.put(1, "get");
+		requestTypeMap.put(2, "other");
+	}
+	
+	
+	
+	//------------------------------------云商------------------------------------
+	
+	//云商ID
+	public static final short CLOUD_ALI = 1;
+	public static final short CLOUD_HUAWEI = 2;
+	
+	//云商中文名
+	public static String getCloudName(short type) {
+		switch (type) {
+			case 1:
+				return "【阿里云】";
+			case 2:
+				return "【华为云】";
+		default:
+			return "【其他】";
+		}
+	}
+	
+	//云商别名
+	public static String getCloudEnName(short type) {
+		switch (type) {
+			case 1:
+				return "ali";
+			case 2:
+				return "huawei";
+		default:
+			return "sys";
+		}
+	}
+	
+	//云商ID
+	public static Short getCloudId(String type) {
+		switch (type) {
+			case "ali":
+				return CLOUD_ALI;
+			case "huawei":
+				return CLOUD_HUAWEI;
+		default:
+			return 0;
+		}
+	}
+	
+	//------------------------------------配额------------------------------------
+	
+	//配额标准
+	public final static BigDecimal NORM_1 = new BigDecimal(199);
+	public final static BigDecimal NORM_2 = new BigDecimal(399);
+	public final static BigDecimal NORM_3 = new BigDecimal(599);
+
+	//获取配额金额
+	public static BigDecimal getNormValue(int type) {
+		switch (type) {
+			case 1:
+				return NORM_1;
+			case 2:
+				return NORM_2;
+			case 3:
+				return NORM_3;
+			default:
+				return null;
+		}
+	}
+	//获取配额数量
+	public static Integer getNormNumber(int type) {
+		switch (type) {
+			case 1:
+				return 30;
+			case 2:
+				return 100;
+			case 3:
+				return 200;
+			default:
+				return 5;
+		}
+	}
+	//获取账号数量
+	public static Short getNormAccount(int type) {
+		switch (type) {
+			case 1:
+				return 5;
+			case 2:
+				return 10;
+			case 3:
+				return 20;
+			default:
+				return 1;
+		}
+	}
+	
+	//------------------------------------订单------------------------------------
+	
+	//订单类型
+	public final static String ORDER_SEV = "SEV";
+	public final static String ORDER_ECS = "ECS";
+	public final static String ORDER_ECD = "ECD";
+	public final static String ORDER_DB = "DB";
+	public final static String ORDER_N = "N";
+	public final static String ORDER_R = "R";
+	
+	//云商中文名
+	public static String getProductName(String product,String type) {
+		String str = type.equals(ORDER_N)?"购买":"续费";
+		switch (product) {
+			case ORDER_SEV:
+				return str+"平台服务";
+			case ORDER_ECS:
+				return str+"云主机";
+			case ORDER_ECD:
+				return str+"云硬盘";
+			case ORDER_DB:
+				return str+"云数据库";
+		default:
+			return "【其他】";
+		}
+	}
+	
+	//订单状态，变化(W等待-D取消-可删除) (W等待-Y已付) (Y未用-N已用) (Y未用-D过期-可删除) 
+	public final static String STATUS_WAIT = "W";		//等待
+	public final static String STATUS_DISABLE = "D";	//取消、过期[可删] 手动状态（手动取消、定时任务到期设置过期）
+	public final static String STATUS_YES = "Y";		//未用[有效]
+	public final static String STATUS_NO = "N";			//已用[无效]
+	
+	public final static String REDIS_KEY_DOMAIN = "domain";
+	public final static String REDIS_KEY_DOMAINVO = "domainVO";
+	public final static String REDIS_KEY_CCRULEVO = "ccVO";
+	public final static String REDIS_KEY_VISITRULEVO = "visitVO";
+	
+}

@@ -1,0 +1,7 @@
+package com.newcloud.waf.web.controller.config.vo;
+
+public class DomainConfigVO {
+	
+	private Integer domainId;
+	
+}

@@ -1,0 +1,16 @@
+package com.newcloud.waf.service;
+
+import java.util.Map;
+
+public interface IOverViewService extends IBaseService{
+
+	/**
+	 * 根据时间戳获取请求数
+	 * @param beginTimestamp
+	 * @param endTimestamp
+	 * @return
+	 */
+	public Map<String,Integer>  findRequsetCountByTime(long beginTimestamp, long endTimestamp);
+	
+	
+}

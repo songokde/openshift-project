@@ -1,0 +1,38 @@
+package com.newcloud.waf.storage.dao;
+
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface IOverViewDAO {
+
+	/**
+	 * 获取最近一周的 天数据汇总
+	 * @param begin7Timestamp
+	 * @param endTimestamp
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, Map<String, Integer>> findRecentMapByTime(Long begin7Timestamp, Long endTimestamp)  throws Exception;
+
+	/**
+	 * 查询topip
+	 * @param domainId
+	 * @param type
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, Object> findTopIpByType(Integer domainId, String type) throws Exception;
+
+	/**
+	 * 查询top区域
+	 * @param domainId
+	 * @param type
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, Object> findTopAreaByType(Integer domainId, String type) throws Exception;
+	
+	
+}

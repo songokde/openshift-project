@@ -1,0 +1,127 @@
+package com.newcloud.waf.storage.entity.waf;
+
+import com.newcloud.waf.storage.entity.BaseEntity;
+
+/**
+ * 攻击状态码表
+ * @author song
+ *
+ */
+public class WafAttackCode extends BaseEntity{
+	private static final long serialVersionUID = 2253130519348764636L;
+	
+	private Integer wacId;
+	
+	private Long wacTimeStamp;
+	
+	private Long  wacDate;
+	 
+	private Integer wacDniId;
+	
+	private String wacNodeIp;
+	
+	private String wacType;
+	
+	private String wacMethod;
+	
+	private Integer wacCount;
+	
+	private Integer wacCode;
+
+	
+	public WafAttackCode() {
+		super();
+	}
+
+
+	public Integer getWacId() {
+		return wacId;
+	}
+
+
+	public void setWacId(Integer wacId) {
+		this.wacId = wacId;
+	}
+
+
+	public Long getWacTimeStamp() {
+		return wacTimeStamp;
+	}
+
+
+	public void setWacTimeStamp(Long wacTimeStamp) {
+		this.wacTimeStamp = wacTimeStamp;
+	}
+
+
+	public Long getWacDate() {
+		return wacDate;
+	}
+
+
+	public void setWacDate(Long wacDate) {
+		this.wacDate = wacDate;
+	}
+
+
+	public Integer getWacDniId() {
+		return wacDniId;
+	}
+
+
+	public void setWacDniId(Integer wacDniId) {
+		this.wacDniId = wacDniId;
+	}
+
+
+	public String getWacNodeIp() {
+		return wacNodeIp;
+	}
+
+
+	public void setWacNodeIp(String wacNodeIp) {
+		this.wacNodeIp = wacNodeIp;
+	}
+
+
+	public String getWacType() {
+		return wacType;
+	}
+
+
+	public void setWacType(String wacType) {
+		this.wacType = wacType;
+	}
+
+
+	public String getWacMethod() {
+		return wacMethod;
+	}
+
+
+	public void setWacMethod(String wacMethod) {
+		this.wacMethod = wacMethod;
+	}
+
+
+	public Integer getWacCount() {
+		return wacCount;
+	}
+
+
+	public void setWacCount(Integer wacCount) {
+		this.wacCount = wacCount;
+	}
+
+
+	public Integer getWacCode() {
+		return wacCode;
+	}
+
+
+	public void setWacCode(Integer wacCode) {
+		this.wacCode = wacCode;
+	}
+
+	
+}

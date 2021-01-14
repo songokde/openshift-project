@@ -1,0 +1,94 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%
+	String path = request.getContextPath()+"/";
+	String hostname = request.getServerName();
+%>
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<base href="<%=path %>">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=0.5, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes" />
+    <title>新壹云</title>
+	<%@ include  file="/html/head_css.jsp"%>
+	<%@ include  file="/html/head_js.jsp"%>
+	<%@ include  file="/html/head_table.jsp"%>
+	<script src="plugin/echarts/echarts.common.min.js"></script>
+	<script src="js/report/webInfo.js?v=${js_version}"></script>
+	<style type="text/css">
+		.inner-describe{
+			text-align: center;
+		}
+		.inner_row{
+			height:80px;
+			width: 100%;
+			padding-top:50px;
+			border:1px solid #DCDCDC;  
+		}
+	</style>
+</head>
+<body class="fixed-sidebar full-height-layout gray-bg" >
+	<div id="">
+        <!--右侧部分开始-->
+		<div class="row J_mainContent" id="content-main">
+			<div class="wrapper wrapper-content">
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="ibox float-e-margins">
+							<div class="ibox-title">
+							<h5>域名：${param.param1}  <a href="javascript:history.back(-1)">返回</a></h5>
+							</div>
+							<div class="ibox-content">
+								<div class="row" style="min-height:1800px;">
+									<div class="col-lg-12 col-md-12 col-sm-12 " >
+										<span style="font-size: 15px">Web防火墙安全监测流程</span>
+										<div class ="inner-describe">
+											<div class="col-md-4 col-sm-12" >
+												<span>精准访问控制</span>
+												<span class="glyphicon glyphicon-arrow-right"></span>
+											</div>
+											<div class="col-md-4 col-sm-12" >
+												<span>cc安全防护</span>
+												<span class="glyphicon glyphicon-arrow-right"></span>
+											</div>
+											<div class="col-md-4 col-sm-12" >
+												<span>Web应用攻击防护</span>
+												<span class="glyphicon glyphicon-arrow-right"></span>
+											</div>
+											<span style="display:inline-block;padding-top:30px;">流量经过Web应用防火墙时，首先依次匹配精准访问控制中的规则，再进行CC攻击的检测，最后进行Web应用攻击防护</span>
+										</div>
+									</div >
+									<div class="col-lg-12 col-md-12 col-sm-12 inner_row">
+										
+									</div>
+								</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--右侧部分结束-->
+		<!--查看攻击详情-->
+	    <div class="modal inmodal" id="attackDetailModal" tabindex="-1" role="dialog" aria-hidden="true">
+		    <div class="modal-dialog" style="width:820px;">
+		        <div class="modal-content animated bounceInRight">
+		            <div class="modal-header">
+		                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span>
+		                </button>
+		                <h5 class="modal-title">查看攻击详情</h5>
+		            </div>
+	                <div class="modal-body">
+	                	<div id="attackDetail">
+	                		<table id = "webDetailTab" class="table"></table>
+	                	</div>
+	                </div>
+	                <div class="modal-footer">
+					</div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+</div>
+</body>
+</html>

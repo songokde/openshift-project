@@ -1,0 +1,171 @@
+
+$(function () {
+	/*$.post("over/allMap", function(data) {
+		$("#webYesterday").html(data["web"]["yesterday"]);
+		$("#webToday").html(data["web"]["today"]);
+		$("#webFuture").html(data["web"]["future"]);
+		$("#ccYesterday").html(data["cc"]["yesterday"]);
+		$("#ccToday").html(data["cc"]["today"]);
+		$("#ccFuture").html(data["cc"]["future"]);
+		$("#visitYesterday").html(data["visit"]["yesterday"]);
+		$("#visitToday").html(data["visit"]["today"]);
+		$("#visitFuture").html(data["visit"]["future"]);
+		showChartWeb(data["webChar"]);
+		showChartCc(data["ccChar"]);
+		showChartVisit(data["visitChar"]);
+		showChartBandWidth();
+	}); */
+	showChartBandWidth();
+});
+
+
+function showChartWeb(data){
+	var myChart = echarts.init(document.getElementById('webLineChart'));
+	option = {
+		tooltip: {
+	        trigger: 'axis',
+	    },
+		xAxis: {
+			show : false,
+	        type: 'category',
+	        data: data["time"]
+	    },
+	    yAxis: {
+	    	show : false,
+	        type: 'value'
+	    },
+	    series: [{
+	    	name:'web攻击',
+            type:'line',
+	        data: data["value"],
+	        type: 'line'
+	    }]
+			   
+	};
+    myChart.setOption(option);
+   
+}
+
+function showChartCc(data){
+	var myChart2 = echarts.init(document.getElementById('ccLineChart'));
+    option = {
+		 tooltip: {
+	         trigger: 'axis',
+	     },
+		 xAxis: {
+			show : false,
+	        type: 'category',
+	        data: data["time"]
+	    },
+	    yAxis: {
+	    	show : false,
+	        type: 'value'
+	    },
+	    series: [{
+	    	name:'cc攻击',
+            type:'line',
+	        data: data["value"],
+	        lineStyle: {
+			 color: 'origin'
+	        }
+	    }]
+    };
+    myChart2.setOption(option);
+}
+
+
+function showChartVisit(data){
+	var myChart3 = echarts.init(document.getElementById('controlLineChart'));
+    option = {
+		tooltip: {
+	        trigger: 'axis',
+	    },
+		xAxis: {
+			show : false,
+	        type: 'category',
+	        data: data["time"]
+	    },
+	    yAxis: {
+	    	show : false,
+	        type: 'value'
+	    },
+	    series: [{
+	    	name:'访问攻击',
+	        data: data["value"],
+	        type: 'line',
+	        lineStyle: {
+				 color: 'blue'
+	        }
+	    }]
+    };
+    myChart3.setOption(option);
+}
+
+function showChartBandWidth(){
+	var myChart4 = echarts.init(document.getElementById('bandWidthChart'));
+	option = {
+	    color:["#117794","#e4393c"],
+	    title: {
+	        text: "近7天带宽/MByte",
+	        left: 'center',
+	        align: 'right',
+	    	textStyle:{
+	    		color:'#666',
+	    		fontSize:12,
+	    		fontWeight:800,
+		    }	
+	    },
+	    tooltip : {
+	        trigger: 'axis',
+	    },
+	    xAxis: {
+	        type: 'category',
+	        boundaryGap: false,
+	        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+	    },
+	    yAxis: {
+	        type: 'value'
+	    },
+	    series: [{
+	        data: [820, 932, 901, 934, 1290, 1330, 1320],
+	        type: 'line',
+	        areaStyle: {}
+	    }]
+	};
+    myChart4.setOption(option);
+}
+
+
+
+function searchPieTab(data){
+	$("#eventTab").bootstrapTable('destroy').bootstrapTable({
+	  	contentType: "application/x-www-form-urlencoded", 
+	  	data:data.data,
+        striped: true,  
+        pagination: false,  
+        singleSelect: false,  
+        clickToSelect:true,  
+        showColumns: false,  
+        search: false,   
+        silent: true,  
+        pageSize: 5,  
+        pageNumber:1, 
+        sidePagination: "client",  
+        pageList:[10, 25, 50, 100],  
+        columns: [{
+            field: "info",
+            title: "消息",
+            width : $(this).width() * 0.60
+        },  {
+            field: "time",
+            title: "日期",
+            width : $(this).width() * 0.20
+        },  {
+            field: "ratio",
+            title: "操作",
+            formatter : function() {
+            	return 	" <button type='button' class='btn ' \">查看详情</button>";
+			}
+        }]
+    });
+}

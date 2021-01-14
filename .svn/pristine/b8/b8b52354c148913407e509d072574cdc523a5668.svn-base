@@ -1,0 +1,164 @@
+$(function(){
+	searchdomainProtection();
+    //表单验证
+    $("#domainProtectionForm").validate({
+		submitHandler:function(form){
+			saveInfoWorkOrder();
+        } 
+    });
+});
+
+function searchdomainProtection() {
+	 var data ={
+			 "count": 1,
+			 "data":[
+			 	{
+			 		"domain":"www.ailiyundemo.com",
+					"service":"",
+					"state":"",
+					"securityState":"",
+					"securitySwitch": "",
+					"action": "",
+			 	}
+			 ]
+	 };
+	$("#domainProtectionTab").bootstrapTable('destroy').bootstrapTable({
+	  	contentType: "application/x-www-form-urlencoded", 
+	  	data:data.data,
+	    striped: true,  
+	    pagination: false,  
+	    singleSelect: false,  
+	    clickToSelect:true,  
+	    showColumns: false,  
+	    search: false,   
+	    silent: true,  
+	    pageSize: 5,  
+	    pageNumber:1, 
+	    sidePagination: "client",  
+	    pageList:[10, 25, 50, 100],  
+	    columns: [{
+	        field: "domain",
+	        title: "域名",
+	        width : $(this).width() * 0.15
+	    },  {
+	        field: "service",
+	        title: "业务可用性",
+	        width : $(this).width() * 0.15
+	    },  {
+	    	field: "state",
+	    	title: "输入状态",
+	    	width : $(this).width() * 0.20
+	    },  {
+	    	field: "securityState",
+	    	title: "安全状态",
+	    	width : $(this).width() * 0.15
+	    },  {
+	    	field: "securitySwitch",
+	    	title: "安全开关",
+	    	width : $(this).width() * 0.15
+	    },  {
+	        field: "action",
+	        title: "操作",
+	        formatter : function() {
+            	return 	" <button type='button' class='btn'  onclick='protectionConfig()'\">防护配置</button>";
+			}
+	    }]
+	});
+}
+
+function protectionConfig(){
+	var domain = "www.ailiyundemo.com";
+	location.href="config/WebProtection?param1="+domain;
+}
+/*function tableParams(params) {
+	return {
+		offset: params.offset,  
+	    limit: params.limit,
+	    domain:$("#domain").val(),
+	};
+}
+
+
+function searchdomainProtection() {
+	$("#domainProtectionTab").bootstrapTable("destroy");
+	$("#domainProtectionTab").bootstrapTable({
+		contentType: "application/x-www-form-urlencoded", 
+		method: 'post',   
+		dataType: "json",  
+		url:"/infoWorkOrder/list",  		 //请求后台的URL（*）
+		striped: true,                      //是否显示行间隔色
+        pagination: true,                   //是否显示分页（*）
+        sortable: true,                    //是否启用排序
+        sortOrder: "desc",                   //排序方式
+        sortName: 'workcreatetime',
+        sidePagination: "server",          //分页方式：client客户端分页，server服务端分页（*）
+        pageNumber: 1,                      //初始化加载第一页，默认第一页
+        pageSize: 10,                       //每页的记录行数（*）
+        pageList: [10, 20, 50, 100],        //可供选择的每页的行数（*）
+        minimumCountColumns: 10,            //最少允许的列数
+        queryParams: tableParams,
+		columns: [
+			{
+		      field: "domain",
+		      title: "域名",
+		      width : $(this).width() * 0.12
+			},{
+		      field: "service",
+		      title: "业务可用性",
+		      align: "center",
+		      width : $(this).width() * 0.06,
+		      formatter : function(value) {
+		    	  	if(value==0){
+	 					return "域名工单";
+	 				}else{
+	 					return "系统问题";
+	 				}
+	 			}
+			},{
+			 field: "state",
+		     title: "输入状态",
+		     align: "center",
+     		 width : $(this).width() * 0.06,
+		     formatter : function(value) {
+		    	if(value==0){
+ 					return "<font color='#FF9500'>一般</font>";
+ 				}else{
+ 					return "<font color='#ed5565'>重要</font>";
+	 				}
+	 			}
+			},{
+		      field: "securityState",
+		      title: "安全状态",
+		      align: "center",
+		      width : $(this).width() * 0.06,
+		      formatter : function(value) {
+		    	if(value==0){
+					return "<font color='#ed5565'>未处理</font>";
+ 				}else if(value==1){
+	 				return "<font color='#FF9500'>处理中</font>";
+				}else{
+				    return "<font color='#27c24c'>已完成</font>";
+				}
+		      }	
+			},{
+		      field: "securitySwitch",
+		      title: "安全开关",
+		      align: "center",
+		      sortable:true,
+		      width : $(this).width() * 0.08
+			},{
+	  			field : 'opt',
+	  			title : '操作',
+	  			align: "center",
+	  			width : $(this).width() * 0.05,
+	  			formatter : function(value,row) {
+	  				return "<a class=\"btn btn-info btn-xs\" onclick=\"openworkfeedback("+row.id+")\">详情</a>";
+	  			}
+			}
+		 ]
+	 });
+}*/
+
+function addDomain(){
+	$("#domainProtectionModal").modal("show");
+}

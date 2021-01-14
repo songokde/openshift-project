@@ -1,0 +1,131 @@
+package com.newcloud.waf.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.newcloud.waf.storage.entity.waf.WafAttackCode;
+import com.newcloud.waf.storage.entity.waf.WafAttackIp;
+import com.newcloud.waf.storage.entity.waf.WafAttackUrl;
+
+public interface IOverViewService extends IBaseService{
+
+	/**
+	 * 根据时间戳获取请求数
+	 * @param beginTimestamp
+	 * @param endTimestamp
+	 * @return
+	 */
+	public Map<String,Long>  findRequsetCountByTime(Long beginTimestamp, Long endTimestamp,Integer custId) throws Exception;
+
+	/**
+	 * 获取最近一周的 天数据汇总
+	 * @param begin7Timestamp
+	 * @param endTimestamp
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, Map<String, Long>> findRecentMapByTime(Long begin7Timestamp, Long endTimestamp,Integer custId) throws Exception;
+
+	/**
+	 * 查询攻击次数
+	 * @param domainId
+	 * @param type
+	 * @param beginTimestamp
+	 * @param endTimestamp
+	 * @return
+	 */
+	public Integer findCountByType(Integer domainId, String type, long beginTimestamp, long endTimestamp,Integer custId) throws Exception;
+
+	/**
+	 * 查询攻击ip数
+	 * @param domainId
+	 * @param type
+	 * @param beginTimestamp
+	 * @param endTimestamp
+	 * @return
+	 * @throws Exception
+	 */
+	public Integer findIpCountByType(Integer domainId, String type, long beginTimestamp, long endTimestamp,Integer custId) throws Exception;
+
+	/**
+	 * ip查询
+	 * @param domainId
+	 * @param beginTime
+	 * @param endTime
+	 * @param offset
+	 * @param limit
+	 * @return
+	 */
+	public List<WafAttackIp> findAttackList(Integer domainId,String type, Long beginTime, Long endTime,Integer custId) throws Exception;
+
+
+	/**
+	 * url查询
+	 * @param domainId
+	 * @param beginTime
+	 * @param endTime
+	 * @param offset
+	 * @param limit
+	 * @return
+	 */
+	public List<WafAttackUrl> findAttackUrlList(Integer domainId, String type, Long beginTime, Long endTime,Integer custId)  throws Exception;
+
+	/**
+	 * code list查询
+	 * @param domainId
+	 * @param type
+	 * @param beginTime
+	 * @param endTime
+	 * @param custId
+	 * @return
+	 */
+	public List<WafAttackCode> findAttackCodeList(Integer domainId, String type, Long beginTime, Long endTime,Integer custId)  throws Exception;
+	
+	/**
+	 * 查询一周带宽
+	 * @param begin7Timestamp
+	 * @param endTimestamp
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, Object> findBandWidthMap(long begin7Timestamp, long endTimestamp,Integer custId)  throws Exception;
+	
+	/**
+	 * 查询状态码图
+	 * @param begin7Timestamp
+	 * @param endTimestamp
+	 * @return
+	 * @throws Exception
+	 */
+	public  Map<Integer,Map<String, Long>> findCodeMap(long begin7Timestamp, long endTimestamp,String type,Integer domainId,Integer custId)  throws Exception;
+
+	/**
+	 * 查询ip攻击详情
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	public WafAttackIp findAttackIpInfo(Integer id,Integer custId)  throws Exception;
+
+	/**
+	 * 查询url攻击详情
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	public WafAttackUrl findAttackUrlInfo(Integer id,Integer custId)  throws Exception;
+
+	/**
+	 * 获取top5数据
+	 * @param domainId
+	 * @param beginTime
+	 * @param endTime
+	 * @param custId
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String,Map<String,Map<String,Object>>> findAttackTopMap(Integer domainId, Long beginTime, Long endTime,
+			Integer custId)  throws Exception;
+
+	
+}

@@ -1,0 +1,30 @@
+package com.newcloud.waf.service.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+import com.newcloud.waf.service.IOverViewService;
+import com.newcloud.waf.storage.entity.BaseEntity;
+
+@Service
+public class OverViewService extends BaseService implements IOverViewService {
+
+	@Override
+	public Map<String,Integer>  findRequsetCountByTime(long beginTimestamp, long endTimestamp) throws Exception {
+		String sql="";
+		Map<String,Object> param = new HashMap<String, Object>();
+		List<BaseEntity> list = baseDAO.findHQL(sql, param);
+		return null;
+	}
+
+	@Override
+	public Map<String, Map<String, Integer>> findRecentMapByTime(long begin7Timestamp, long endTimestamp) throws Exception {
+		return null;
+	}
+
+	
+
+}

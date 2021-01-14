@@ -1,0 +1,139 @@
+
+$(function () {
+	$.post("over/allMap", function(data) {
+		$("#webYesterday").html(data["web"]["yesterday"]);
+		$("#webToday").html(data["web"]["today"]);
+		$("#webFuture").html(data["web"]["future"]);
+		$("#ccYesterday").html(data["cc"]["yesterday"]);
+		$("#ccToday").html(data["cc"]["today"]);
+		$("#ccFuture").html(data["cc"]["future"]);
+		$("#visitYesterday").html(data["visit"]["yesterday"]);
+		$("#visitToday").html(data["visit"]["today"]);
+		$("#visitFuture").html(data["visit"]["future"]);
+		showChartWeb(data["webChar"]);
+		showChartCc(data["ccChar"]);
+		showChartVisit(data["visitChar"]);
+	}); 
+});
+
+
+function showChartWeb(data){
+	var myChart = echarts.init(document.getElementById('webLineChart'));
+	// 指定图表的配置项和数据
+	option = {
+		tooltip: {
+	        trigger: 'axis',
+	    },
+		xAxis: {
+			show : false,
+	        type: 'category',
+	        data: data["time"]
+	    },
+	    yAxis: {
+	    	show : false,
+	        type: 'value'
+	    },
+	    series: [{
+	    	name:'web攻击',
+            type:'line',
+	        data: data["value"],
+	        type: 'line'
+	    }]
+			   
+	};
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+   
+}
+
+function showChartCc(data){
+	var myChart2 = echarts.init(document.getElementById('ccLineChart'));
+    // 指定图表的配置项和数据
+    option = {
+		 tooltip: {
+	         trigger: 'axis',
+	     },
+		 xAxis: {
+			show : false,
+	        type: 'category',
+	        data: data["time"]
+	    },
+	    yAxis: {
+	    	show : false,
+	        type: 'value'
+	    },
+	    series: [{
+	    	name:'cc攻击',
+            type:'line',
+	        data: data["value"],
+	        lineStyle: {
+			 color: 'origin'
+	        }
+	    }]
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart2.setOption(option);
+}
+
+
+function showChartVisit(data){
+	var myChart3 = echarts.init(document.getElementById('controlLineChart'));
+    // 指定图表的配置项和数据
+    option = {
+		tooltip: {
+	        trigger: 'axis',
+	    },
+		xAxis: {
+			show : false,
+	        type: 'category',
+	        data: data["time"]
+	    },
+	    yAxis: {
+	    	show : false,
+	        type: 'value'
+	    },
+	    series: [{
+	    	name:'访问攻击',
+	        data: data["value"],
+	        type: 'line',
+	        lineStyle: {
+				 color: 'blue'
+	        }
+	    }]
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart3.setOption(option);
+}
+
+function searchPieTab(data){
+	$("#eventTab").bootstrapTable('destroy').bootstrapTable({
+	  	contentType: "application/x-www-form-urlencoded", 
+	  	data:data.data,
+        striped: true,  
+        pagination: false,  
+        singleSelect: false,  
+        clickToSelect:true,  
+        showColumns: false,  
+        search: false,   
+        silent: true,  
+        pageSize: 5,  
+        pageNumber:1, 
+        sidePagination: "client",  
+        pageList:[10, 25, 50, 100],  
+        columns: [{
+            field: "info",
+            title: "消息",
+            width : $(this).width() * 0.60
+        },  {
+            field: "time",
+            title: "日期",
+            width : $(this).width() * 0.20
+        },  {
+            field: "ratio",
+            title: "操作",
+            formatter : function() {
+            	return 	" <button type='button' class='btn ' \">查看详情</button>";
+			}
+        }]
+    });
+}

@@ -1,0 +1,130 @@
+package com.newcloud.waf.web.controller.config;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.newcloud.waf.service.IDomainConfigService;
+import com.newcloud.waf.service.IExactConfigService;
+import com.newcloud.waf.storage.entity.BaseEntity;
+import com.newcloud.waf.storage.entity.waf.WafExactInfo;
+import com.newcloud.waf.web.controller.BaseController;
+
+/**
+ * 精准打击规则
+ * @author song
+ *
+ */
+@Controller
+@RequestMapping("/exact")
+public class ExactConfigController extends BaseController{
+
+	@Resource
+	private IExactConfigService exactConfigService;
+	
+	@Resource
+	private IDomainConfigService domainConfigService;
+	
+	/**
+     * 精准打击规则列表
+     * @param domain
+     * @param offset
+     * @param limit
+     * @return
+     */
+    @RequestMapping("/list")
+    @ResponseBody
+	public Map<String,Object> getExactConfigList(String name,Integer offset,Integer limit){
+    	Integer custId = getNowCompany();
+    	name = name==null?"":name;
+		offset = offset==null?0:(offset/limit)+1;
+		limit = limit==null?10:limit;
+		Map<String,Object> map = new HashMap<String, Object>();
+		try{
+			map.put("rows",exactConfigService.findExactConfigList(custId,name, offset, limit));
+			map.put("total", exactConfigService.findExactConfigCount(custId,name));
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return map;
+    }
+    
+    /**
+     * 精准打击规则详情
+     * @param id
+     * @return
+     */
+    @RequestMapping("/info")
+    @ResponseBody
+	public BaseEntity getExactConfigInfo(Integer id){
+		try{
+			return baseService.findInfo(WafExactInfo.class, id);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+    }
+    
+    /**
+     * 修改打击规则详情
+     * @param id
+     * @return
+     */
+    @RequestMapping("/up")
+    @ResponseBody
+	public String upDateExactConfigInfo(Integer id,String weiRuleName,String[] fields,String[] symbols,String[] infos,String weiMovement){
+		boolean flag=false;
+    	try{
+    		JSONArray array = new JSONArray();
+    		for(int i=0;i<fields.length;i++) {
+    			JSONObject obj = new JSONObject();
+    			obj.put("field", fields[i]);    //匹配字段
+    			obj.put("symbol", symbols[i]);  //逻辑符
+    			obj.put("info", infos[i]);      //内容
+    			array.add(obj);
+    		}
+    		WafExactInfo exactInfo = new WafExactInfo();
+    		exactInfo.setWeiId(id);
+    		exactInfo.setWeiCusId(getNowCompany());
+    		exactInfo.setWeiMovement(weiMovement);
+    		exactInfo.setWeiRuleName(weiRuleName);
+    		exactInfo.setWeiRuleInfo(array.toJSONString());
+    		flag = baseService.saveOrUpdate(exactInfo);
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return flag?"OK":"ERROR";
+    }
+    
+    
+    /**
+     * 删除精准打击规则详情
+     * @param id
+     * @return
+     */
+    @RequestMapping("/del")
+    @ResponseBody
+	public String deleteExactConfigInfo(Integer id){
+    	boolean flag=false;
+    	try{
+    		WafExactInfo info = baseService.findInfo(WafExactInfo.class, id);
+    		flag = domainConfigService.findDomainByRuleId(info.getWeiId(), "exact");
+    		if(flag) {
+    			return "NO";    //有关联，不让删
+    		}
+    		flag = baseService.delete(info);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return flag?"OK":"ERROR";
+    }
+    
+}

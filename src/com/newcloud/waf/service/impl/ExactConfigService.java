@@ -1,0 +1,49 @@
+package com.newcloud.waf.service.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import com.newcloud.waf.service.IExactConfigService;
+import com.newcloud.waf.storage.entity.BaseEntity;
+
+@Service
+public class ExactConfigService extends BaseService implements IExactConfigService {
+
+	@Override
+	public List<BaseEntity> findExactConfigList(Integer custId, String domain, Integer offset, Integer limit)
+			throws Exception {
+		String hql = "from WafExactInfo  where 1=1 ";
+		Map<String,Object> param = new HashMap<String, Object>();
+		if(!StringUtils.isEmpty(custId)){
+			hql += " and weiCusId =:custId";
+			param.put("custId", custId);
+		}
+		if(!StringUtils.isEmpty(domain)){
+			hql += " and weiRuleName like :name";
+			param.put("name", "%"+domain+"%");
+		}
+		return  baseDAO.findHQL(hql,offset, limit,param);
+	}
+
+	@Override
+	public Long findExactConfigCount(Integer custId, String domain) throws Exception {
+		String hql = "select count(*) from WafExactInfo  where 1=1 ";
+		Map<String,Object> param = new HashMap<String, Object>();
+		if(!StringUtils.isEmpty(custId)){
+			hql += " and weiCusId =:custId";
+			param.put("custId", custId);
+		}
+		if(!StringUtils.isEmpty(domain)){
+			hql += " and weiRuleName like :name";
+			param.put("name", "%"+domain+"%");
+		}
+		return  baseDAO.findHQLCount(hql,param);
+	}
+	
+	
+
+}

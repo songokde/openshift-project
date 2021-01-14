@@ -1,0 +1,217 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%
+	String path = request.getContextPath()+"/";
+	String hostname = request.getServerName();
+%>
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<base href="<%=path %>">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=0.5, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes" />
+    <title>新壹云</title>
+	<%@ include  file="/html/head_css.jsp"%>
+	<%@ include  file="/html/head_js.jsp"%>
+	<%@ include  file="/html/head_table.jsp"%>
+	<script src="plugin/echarts/echarts.common.min.js"></script>
+	<script src="js/report/webInfo.js?v=${js_version}"></script>
+	
+	
+	<script type="text/javascript">
+		 window.onload = function(){
+			 var data ={
+					 "count": 2,
+					 "data":[
+					 	{
+					 		"ip":"91.200.12.135",
+							"area":"乌克兰",
+							"time":"2017-01-10 21:23:09",
+							"times":"8",
+							"ratio": "0"
+					 	},
+					 	{
+					 		"ip":"91.120.14.16",
+							"area":"南通",
+							"time":"2017-11-10 12:51:03",
+							"times":"15",
+							"ratio": "0"
+					 	}
+					 ]
+			 };
+			 showChart();
+			 searchPieTab(data);
+		 }
+	</script>
+	
+	
+	<style type="text/css">
+		.title_text{
+			text-align:left;
+			font-size: 20px;
+			color:#708090;
+		}
+		.detail_text{
+			text-align:left;
+			font-size: 15px;
+		}
+	</style>
+</head>
+<body class="fixed-sidebar full-height-layout gray-bg" >
+	<div id="">
+        <!--右侧部分开始-->
+		<div class="row J_mainContent" id="content-main">
+			<div class="wrapper wrapper-content">
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="ibox float-e-margins">
+							<div class="ibox-title">
+								<h5>安全报表><a href="javascript:history.back(-1)">返回上级列表</a></h5>
+							</div>
+							<div class="ibox-content">
+								<div class="row" style="min-height:1800px;">
+									<div class="col-lg-12 col-md-12 col-sm-12">
+										<div class="tabs-container">
+											<ul class="nav nav-tabs">
+						                        <li class="active"><a href="/report/webInfo">Web应用攻击</a></li>
+						                        <li class=""><a href="report/ccInfo">CC攻击</a></li>
+						                        <li class=""><a href="report/accessInfo">访问控制事件</a></li>
+						                    </ul>
+										</div>
+									</div>
+									<div class="col-lg-12 col-md-12 col-sm-12 toolBar_body">
+										<div class="toolBar-left">
+			                            	<span>选择域名：</span>
+			                            	<input type="text"/>
+			                            </div>
+										<div class="toolBar-left">
+			                            	<span>查询时间：</span>
+			                            	<button class="btn">昨天</button>
+			                            	<button class="btn">今天</button>
+			                            	<button class="btn"> 7 天</button>
+			                            	<button class="btn">30天</button>
+			                            </div>
+									</div>
+									<div class="col-lg-12 col-md-12 col-sm-12" style="padding-top:30px;">
+										<div class="col-md-3 col-sm-12 content-top">
+											<div class ="inner-content">
+												<div class ="chart_title">
+													<span class="title_text">昨天</span>
+												</div>
+												<div class ="chart_detail">
+													<div class ="chart_detail1">
+														<span class="detail_text">攻击次数</span><br/>
+														<span class="detail_amount">100万</span>
+													</div>
+													<div class ="chart_detail2">
+														<span class="detail_text">攻击源IP个数</span><br/>
+														<span class="detail_amount">1000万</span>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-3 col-sm-12 content-top">
+											<div class ="inner-content">
+												<div class ="chart_title">
+													<span class="title_text">今天</span>
+												</div>
+												<div class ="chart_detail">
+													<div class ="chart_detail1">
+														<span class="detail_text">攻击次数</span><br/>
+														<span class="detail_amount">100万</span>
+													</div>
+													<div class ="chart_detail2">
+														<span class="detail_text">攻击源IP个数</span><br/>
+														<span class="detail_amount">1000万</span>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-3 col-sm-12 content-top">
+											<div class ="inner-content">
+												<div class ="chart_title">
+													<span class="title_text">7天</span>
+												</div>
+												<div class ="chart_detail">
+													<div class ="chart_detail1">
+														<span class="detail_text">攻击次数</span><br/>
+														<span class="detail_amount">100万</span>
+													</div>
+													<div class ="chart_detail2">
+														<span class="detail_text">攻击源IP个数</span><br/>
+														<span class="detail_amount">1000万</span>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-3 col-sm-12 content-top">
+											<div class ="inner-content">
+												<div class ="chart_title">
+													<span class="title_text">30天</span>
+												</div>
+												<div class ="chart_detail">
+													<div class ="chart_detail1">
+														<span class="detail_text">攻击次数</span><br/>
+														<span class="detail_amount">100万</span>
+													</div>
+													<div class ="chart_detail2">
+														<span class="detail_text">攻击源IP个数</span><br/>
+														<span class="detail_amount">1000万</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-12 col-md-12 col-sm-12" style="padding-top:30px;">
+										<div class="col-md-4 col-sm-12 " >
+											<div class="second-content">
+												<span class = "detail_text">安全攻击类型分布</span>
+												<div class="pieChart" id = "attackPieChart"></div>
+											</div>
+										</div>
+										<div class="col-md-4 col-sm-12">
+											<div class="second-content" id = "attack_sourceIP">
+												<span class = "detail_text">安全来源IP TOP5</span>
+												<div class="pieChart" id = "sourcePieChart"></div>
+											</div>
+										</div>
+										<div class="col-md-4 col-sm-12">
+											<div class="second-content" id = "attack_sourceArea">
+												<span class = "detail_text">安全来源区域 TOP5(滞后一个小时)</span>
+												<div class="pieChart" id = "safePieChart"></div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-12 col-md-12 col-sm-12" style="padding-top:5px;">
+										<table id = "attackDetailTab" class="table"></table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--右侧部分结束-->
+		<!--查看攻击详情-->
+	    <div class="modal inmodal" id="attackDetailModal" tabindex="-1" role="dialog" aria-hidden="true">
+		    <div class="modal-dialog" style="width:820px;">
+		        <div class="modal-content animated bounceInRight">
+		            <div class="modal-header">
+		                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span>
+		                </button>
+		                <h5 class="modal-title">查看攻击详情</h5>
+		            </div>
+	                <div class="modal-body">
+	                	<div id="attackDetail">
+	                		<table id = "webDetailTab" class="table"></table>
+	                	</div>
+	                </div>
+	                <div class="modal-footer">
+					</div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.2.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd">
+        
+	<!-- 全局定时任务实体类定义  -->
+	<bean id="reloadJob" class="com.newcloud.waf.job.RedisReloadJob"></bean>
+
+	<!-- 重载全局缓存 -->
+	<bean id="cronTrigger_1" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+		<property name="jobDetail" ref="quartzJob_1" />   
+		<property name="cronExpression" value="0 0/10 * * * ?" />  
+	</bean>
+	<bean id="quartzJob_1" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="reloadJob"/>
+        </property>
+        <property name="concurrent" value="false"/>  
+        <property name="targetMethod" value="reloadRedis"/>
+    </bean>
+	
+    
+	<!-- 全局定时任务启动加载 -->
+	 <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">  
+		<property name="triggers">  
+			<list>
+ 				<!-- <ref bean="cronTrigger_1"/>  -->
+			</list>  
+		</property>  
+	</bean> 
+	
+</beans>  

@@ -1,0 +1,200 @@
+$(function(){
+	searchExactTable();
+	$("#exactRuleForm").validate({
+		submitHandler:function(form){
+			saveExactConfigInfo();
+		}
+	});
+});
+
+//模糊查询
+function search(){
+	searchExactTable();
+}
+
+function tableParams(params) {
+	return {
+		offset: params.offset,  
+	    limit: params.limit,
+	    name: $("#searchName").val()
+	};
+}
+
+//tab
+function searchExactTable() {
+	$("#exactConfigTab").bootstrapTable('destroy').bootstrapTable({
+		contentType: "application/x-www-form-urlencoded", 
+	  	method: 'post', 
+	  	dataType: "json",  
+		url: "exact/list",
+		striped: true,                      //是否显示行间隔色
+	    pagination: true,                   //是否显示分页（*）
+	    sortable: false,                    //是否启用排序
+	    sortOrder: "asc",                   //排序方式
+	    sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+	    pageNumber: 1,                      //初始化加载第一页，默认第一页
+	    pageSize: 5,                        //每页的记录行数（*）
+	    pageList: [5, 10, 20, 100],      	//可供选择的每页的行数（*）
+	    minimumCountColumns: 10,            //最少允许的列数
+	    queryParams: tableParams, 
+	    columns: [{
+	        field: "weiRuleName",
+	        title: "规则名称",
+	        width : $(this).width() * 0.15
+	    },  {
+	    	field: "weiMovement",
+	    	title: "动作",
+	    	width : $(this).width() * 0.15,
+	    	formatter : function(value) {
+	        	if(value==0){
+	        		return "<a class='btn btn-xs btn-danger' >阻断</a>";
+	        	}else{
+	        		return "<a class='btn btn-xs btn-success' >放行</a>";
+	        	}
+			}
+	    },  {
+	    	field: "weiRuleInfo",
+	    	title: "规则详情",
+	    	width : $(this).width() * 0.15,
+	    	formatter : function(value) {
+	    		var cc = jQuery.parseJSON(value)
+	    		var out="";
+	    		var field="";
+	    		var symble="";
+	    		var info ="";
+	    		for(var i in cc){
+	    			out = out  + "  " +cc[i].field+cc[i].symbol+cc[i].info;
+	    		}
+	    		return out;
+	    	}
+	    },  {
+	        field: "action",
+	        title: "操作",
+	        width : $(this).width() * 0.08,
+	        formatter : function(value,row,index) {
+            	return 	" <button type='button'  onclick='updateExactConfigInfo("+JSON.stringify(row)+")' class='btn yellow-bg btn-xs'\">编辑</button>"+
+            	        " <button type='button' onclick='deleteExactConfigInfo("+row.weiId+")' class='btn btn-danger btn-xs'\">删除</button>";
+			}
+	    }]
+	});
+}
+
+//添加
+function addRule(){
+	$('#id').val(""),
+	$("#exactRuleForm")[0].reset();
+	$(".addContent").remove();
+	$("#exactRuleModal").modal("show");
+}
+
+//查看
+function updateExactConfigInfo(obj){
+	$("#exactRuleForm")[0].reset();
+	$(".addContent").remove();
+	var weiRuleInfo = jQuery.parseJSON(obj.weiRuleInfo);
+	for(var i=0;i<=weiRuleInfo.length-1;i++){
+		if(i==0){
+			$(".fields").val(weiRuleInfo[i].field);
+			$(".symbols").val(weiRuleInfo[i].symbol);
+			$(".infos").val(weiRuleInfo[i].info);
+		}else{
+			addButton1(i);
+			$(".fields"+i).val(weiRuleInfo[i].field);
+			$(".symbols"+i).val(weiRuleInfo[i].symbol);
+			$(".infos"+i).val(weiRuleInfo[i].info);
+		}
+	}
+	$('#id').val(obj.weiId),
+	$('#weiRuleName').val(obj.weiRuleName),
+	$('#weiMovement').val(obj.weiMovement),
+	
+	$("#exactRuleModal").modal("show");
+}
+
+//保存
+function saveExactConfigInfo(){
+	$(".save").attr("disabled",true);
+	$.ajax({
+        cache: true,
+        type: "POST",
+        url:"exact/up",
+        data:$('#exactRuleForm').serialize(),
+        async: false,
+        error: function(request) {
+        	$(".save").attr("disabled",false);
+        	swal("提示信息","保存失败","error");
+        },
+        success: function(data) {
+        	$(".save").attr("disabled",false);
+			if (data == "OK") {
+				$("#exactRuleModal").modal("hide");
+				swal("提示信息","保存成功","success");
+				$("#exactConfigTab").bootstrapTable("refresh");
+			} else{
+				swal("提示信息",data.toString(),"error");
+			}
+        }
+    });
+}
+
+//删除
+function deleteExactConfigInfo(weiId){
+	swal({   
+		title: "确定删除吗？",
+		text: "你将无法恢复！",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#DD6B55",
+		confirmButtonText: "确定删除！",
+		closeOnConfirm: false 
+	},function(){
+		$.post("exact/del", {id:weiId}, function(data) {
+			if (data == "OK") {
+				swal("提示信息","删除成功","success");
+				$("#exactConfigTab").bootstrapTable("refresh");
+			}else if(data == "NO"){
+				swal("提示信息","删除失败,已有域名绑定该规则","warning");
+			}else{
+				swal("提示信息",data.toString(),"error");
+			}
+		});
+	});
+}
+
+//添加div
+function addButton1(j){
+		var addContent='<div class="addContent" style="margin-top: 10px"><div class="div_rule" style="margin-top:10px">\
+							<select class="fields'+j+'" name="fields" style="height: 30px;width: 170px">\
+								<option value="URL" >URL</option>\
+								<option value="IP" >IP</option>\
+								<option value="Reference" >Reference</option>\
+								<option value="User-Agent" >User-Agent</option>\
+								<option value="Params" >Params</option>\
+							</select>\
+						</div>\
+						<div class="div_rules" style="width: 120px">\
+							<select  class="symbols'+j+'"  name="symbols" style="height: 30px;width: 100px">\
+								<option value="不包含" >不包含</option>\
+								<option value="包含" >包含</option>\
+								<option value="不等于" >不等于</option>\
+								<option value="等于" >等于</option>\
+								<option value="长度小于" >长度小于</option>\
+								<option value="长度大于" >长度大于</option>\
+							</select>\
+						</div>\
+						<div class="div_rules" style="width: 220px">\
+							<input class="form-control infos'+j+'" type="text" name="infos" style="height: 30px;width: 220px" required/>\
+						</div>\
+						<div style="float: left;margin: 15px 5px;">\
+							<span onclick="btndel(this)" id="btn_del" class="btn_place"  style="margin:0;color: red">\
+								<i class="fa fa-trash-o fa-lg"></i>\
+							</span>\
+						</div></div>';
+		$("#add_config").append(addContent);
+		j++;
+}
+
+//删除按钮
+function btndel(obj){
+	$(obj).parent().parent().remove();
+}

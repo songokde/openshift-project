@@ -1,0 +1,102 @@
+package com.newcloud.waf.storage.entity.info;
+
+import com.newcloud.waf.storage.entity.BaseEntity;
+
+public class InfoCustomer extends BaseEntity{
+	private static final long serialVersionUID = 2253130519348764636L;
+	
+	private Integer cusId;
+	private String cusCompany;
+	private String cusAliasname;
+	private Integer cusType;
+	private String cusRole;
+	private String cusStatus;
+	private Short cusBranch;
+	private Integer cusParent;
+	
+	public InfoCustomer() {
+		super();
+	}
+
+	public InfoCustomer(Integer cusId) {
+		super();
+		this.cusId = cusId;
+	}
+
+	public InfoCustomer(Integer cusId, String cusCompany, String cusAliasname, Integer cusType, String cusRole,
+			String cusStatus,Short cusBranch, Integer cusParent) {
+		super();
+		this.cusId = cusId;
+		this.cusCompany = cusCompany;
+		this.cusAliasname = cusAliasname;
+		this.cusType = cusType;
+		this.cusRole = cusRole;
+		this.cusStatus = cusStatus;
+		this.cusBranch = cusBranch;
+		this.cusParent = cusParent;
+	}
+
+	public Integer getCusId() {
+		return cusId;
+	}
+
+	public void setCusId(Integer cusId) {
+		this.cusId = cusId;
+	}
+
+	public String getCusCompany() {
+		return cusCompany;
+	}
+
+	public void setCusCompany(String cusCompany) {
+		this.cusCompany = cusCompany;
+	}
+
+	public String getCusAliasname() {
+		return cusAliasname;
+	}
+
+	public void setCusAliasname(String cusAliasname) {
+		this.cusAliasname = cusAliasname;
+	}
+
+	public Integer getCusType() {
+		return cusType;
+	}
+
+	public void setCusType(Integer cusType) {
+		this.cusType = cusType;
+	}
+
+	public String getCusRole() {
+		return cusRole;
+	}
+
+	public void setCusRole(String cusRole) {
+		this.cusRole = cusRole;
+	}
+
+	public Integer getCusParent() {
+		return cusParent;
+	}
+
+	public void setCusParent(Integer cusParent) {
+		this.cusParent = cusParent;
+	}
+
+	public Short getCusBranch() {
+		return cusBranch;
+	}
+
+	public void setCusBranch(Short cusBranch) {
+		this.cusBranch = cusBranch;
+	}
+
+	public String getCusStatus() {
+		return cusStatus;
+	}
+
+	public void setCusStatus(String cusStatus) {
+		this.cusStatus = cusStatus;
+	}
+}
